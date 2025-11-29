@@ -13,7 +13,8 @@
     "overrideReferences": true,
     "precompiledReferences": [
         "YAP4VRC.Polly.Core.dll",
-        "YPF4VRC.0Harmony.dll"
+        "YPF4VRC.0Harmony.dll",
+        "VRCCore-Editor.dll"
     ],
     "autoReferenced": false,
     "defineConstraints": [],
