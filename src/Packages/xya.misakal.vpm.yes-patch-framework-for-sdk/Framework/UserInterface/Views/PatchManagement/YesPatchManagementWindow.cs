@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using YesPatchFrameworkForVRChatSdk.PatchManagement;
 using YesPatchFrameworkForVRChatSdk.UserInterface.Controls.PatchManagement;
+using YesPatchFrameworkForVRChatSdk.UserInterface.StateManagement;
 
 namespace YesPatchFrameworkForVRChatSdk.UserInterface.Views.PatchManagement
 {
@@ -11,6 +12,7 @@ namespace YesPatchFrameworkForVRChatSdk.UserInterface.Views.PatchManagement
     {
         [SerializeField] private VisualTreeAsset m_VisualTreeAsset = default;
 
+        private readonly YesPatchManagerStateManager _patchManagerStateManager = YesPatchManagerStateManager.Instance;
         private readonly YesPatchManager _yesPatchManager = YesPatchManager.Instance;
 
         [MenuItem("Window/Yes! Patch Framework/Patch Management")]
@@ -31,7 +33,7 @@ namespace YesPatchFrameworkForVRChatSdk.UserInterface.Views.PatchManagement
             patchesListView.makeItem = () => new VisualElement();
             patchesListView.bindItem = (view, index) =>
             {
-                var item = new YesPatchListItem(patches[index], _yesPatchManager);
+                var item = new YesPatchListItem(patches[index], _patchManagerStateManager);
                 view.Add(item);
             };
 

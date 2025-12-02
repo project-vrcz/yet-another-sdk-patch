@@ -48,6 +48,13 @@ public sealed class YesPatchManager
         Debug.Log(completedMessageBuilder.ToString());
     }
 
+    public void SetPatchEnabled(string patchId, bool enabled)
+    {
+        var settings = YesPatchManagerSettings.GetOrCreateSettings();
+
+        settings.SetPatchEnabled(patchId, enabled);
+    }
+
     private void ApplyPatchesCore(YesPatch[] patches)
     {
         var settings = YesPatchManagerSettings.GetOrCreateSettings();

@@ -8,7 +8,7 @@
     <Style src="YesPatchListItem.uss" />
 
     <engine:VisualElement class="patch-item-container">
-        <engine:Toggle/>
+        <engine:Toggle name="patch-toggle" />
         <engine:VisualElement>
             <engine:Label name="patch-display-name" text="Patch DisplayName" />
             <engine:Label name="patch-id" text="Patch ID" />
