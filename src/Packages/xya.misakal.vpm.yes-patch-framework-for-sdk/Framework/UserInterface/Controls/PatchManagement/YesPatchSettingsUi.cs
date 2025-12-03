@@ -66,8 +66,9 @@ internal sealed class YesPatchSettingsUi : VisualElement
             return;
         }
 
-        patch.CreateSettingsUi(_customUiContainer);
+        _customUiContainer.Clear();
 
+        patch.CreateSettingsUi(_customUiContainer);
         _customUiContainer.Add(new IMGUIContainer(patch.OnSettingUi));
     }
 
