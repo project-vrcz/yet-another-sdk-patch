@@ -31,20 +31,33 @@ namespace YesPatchFrameworkForVRChatSdk.Settings.PatchManager
 
         public bool IsPatchEnabled(string patchId, bool fallbackValue = false)
         {
-            var setting = patchSettings.Find(s => s.Id == patchId);
-            return setting?.IsEnabled ?? fallbackValue;
+            var settingIndex = patchSettings.FindIndex(s => s.id == patchId);
+            if (settingIndex == -1)
+                return fallbackValue;
+
+            var setting = patchSettings[settingIndex];
+            return setting.isEnabled;
         }
 
         public void SetPatchEnabled(string patchId, bool isEnabled)
         {
-            var setting = patchSettings.Find(s => s.Id == patchId);
-            if (setting != null)
+            var settingIndex = patchSettings.FindIndex(s => s.id == patchId);
+            var setting = settingIndex == -1 ? new YesPatchManagerPatchSettings() : patchSettings[settingIndex];
+
+            setting.id = patchId;
+            setting.isEnabled = isEnabled;
+
+            if (settingIndex == -1)
             {
-                setting.IsEnabled = isEnabled;
+                patchSettings.Add(new YesPatchManagerPatchSettings
+                {
+                    id = patchId,
+                    isEnabled = isEnabled
+                });
             }
             else
             {
-                patchSettings.Add(new YesPatchManagerPatchSettings(patchId, isEnabled));
+                patchSettings[settingIndex] = setting;
             }
 
             EditorUtility.SetDirty(this);
