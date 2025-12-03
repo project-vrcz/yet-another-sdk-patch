@@ -29,10 +29,10 @@ namespace YesPatchFrameworkForVRChatSdk.Settings.PatchManager
             return settings;
         }
 
-        public bool IsPatchEnabled(string patchId)
+        public bool IsPatchEnabled(string patchId, bool fallbackValue = false)
         {
             var setting = patchSettings.Find(s => s.Id == patchId);
-            return setting?.IsEnabled ?? true;
+            return setting?.IsEnabled ?? fallbackValue;
         }
 
         public void SetPatchEnabled(string patchId, bool isEnabled)

@@ -61,7 +61,7 @@ public sealed class YesPatchManager
 
         foreach (var patch in patches)
         {
-            if (!settings.IsPatchEnabled(patch.Id))
+            if (!settings.IsPatchEnabled(patch.Id, patch.IsDefaultEnabled))
                 continue;
 
             Debug.Log($"[YesPatchFramework] Applying patch: [{patch.Id}] {patch.DisplayName}");

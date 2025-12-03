@@ -10,6 +10,7 @@ public sealed class YesPatch
 
     public string Id => _instance.Id;
     public string DisplayName => _instance.DisplayName;
+    public bool IsDefaultEnabled => _instance.IsDefaultEnabled;
 
     public YesPatchStatus Status { get; private set; } = YesPatchStatus.Instantiated;
     public Exception? LastPatchException { get; private set; }
