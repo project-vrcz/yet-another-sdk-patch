@@ -29,7 +29,7 @@ internal sealed class YesPatchManagementView : VisualElement
             view.Add(item);
         };
 
-        patchesListView.fixedItemHeight = 50;
+        patchesListView.fixedItemHeight = 67;
         patchesListView.itemsSource = patches;
     }
 }

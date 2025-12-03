@@ -11,6 +11,7 @@ internal sealed class YesPatchListItem : VisualElement
 
     private readonly Label patchIdLabel;
     private readonly Label patchDisplayNameLabel;
+    private readonly Label patchDescriptionLabel;
 
     private readonly YesPatch _yesPatch;
     private readonly YesPatchManagerStateManager _yesPatchManagerStateManager;
@@ -29,9 +30,16 @@ internal sealed class YesPatchListItem : VisualElement
 
         patchIdLabel = this.Q<Label>("patch-id");
         patchDisplayNameLabel = this.Q<Label>("patch-display-name");
+        patchDescriptionLabel = this.Q<Label>("patch-description");
 
         patchIdLabel.text = yesPatch.Id;
+        patchIdLabel.tooltip = yesPatch.Id;
+
         patchDisplayNameLabel.text = yesPatch.DisplayName;
+        patchDisplayNameLabel.tooltip = yesPatch.DisplayName;
+
+        patchDescriptionLabel.text = yesPatch.Description;
+        patchDescriptionLabel.tooltip = yesPatch.Description;
 
         UpdateToggle();
 

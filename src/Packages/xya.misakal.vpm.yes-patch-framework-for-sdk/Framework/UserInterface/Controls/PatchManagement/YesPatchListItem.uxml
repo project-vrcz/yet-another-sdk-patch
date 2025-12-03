@@ -10,8 +10,9 @@
     <engine:VisualElement class="patch-item-container">
         <engine:Toggle name="patch-toggle" />
         <engine:VisualElement>
-            <engine:Label name="patch-display-name" text="Patch DisplayName" />
             <engine:Label name="patch-id" text="Patch ID" />
+            <engine:Label name="patch-display-name" text="Patch DisplayName" />
+            <engine:Label name="patch-description" text="Patch Description" />
         </engine:VisualElement>
     </engine:VisualElement>
 </engine:UXML>
