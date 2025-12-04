@@ -77,6 +77,8 @@ public sealed class YesPatchManager
                 Debug.LogError(
                     $"[YesPatchFramework] Failed to apply patch: [{patch.Id}] {patch.DisplayName}");
                 Debug.LogException(ex);
+
+                SetPatchEnabled(patch.Id, false);
             }
         }
 

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
+using UnityEngine;
 using YesPatchFrameworkForVRChatSdk.PatchManagement;
+using YesPatchFrameworkForVRChatSdk.Settings.PatchManager;
 
 namespace YesPatchFrameworkForVRChatSdk.UserInterface.StateManagement;
 
@@ -13,12 +15,15 @@ internal sealed class YesPatchManagerStateManager
     public event EventHandler<string>? OnPatchEnabled;
     public event EventHandler<string>? OnPatchDisabled;
 
+    public event EventHandler<string>? OnPatchStatusChanged;
+
     public bool IsPatchEnabled(string patchId)
     {
-        var patch = _patchManager.Patches
-            .FirstOrDefault(p => p.Id == patchId);
+        if (_patchManager.Patches.FirstOrDefault(p => p.Id == patchId) is not { } patch)
+            return false;
 
-        return patch is { Status: YesPatchStatus.Patched };
+        var settings = YesPatchManagerSettings.GetOrCreateSettings();
+        return settings.IsPatchEnabled(patchId, patch.IsDefaultEnabled);
     }
 
     public void EnablePatch(string patchId)
@@ -27,9 +32,25 @@ internal sealed class YesPatchManagerStateManager
         if (patch == null || (patch.Status != YesPatchStatus.UnPatched && patch.Status != YesPatchStatus.Instantiated))
             return;
 
-        patch.Patch();
-        _patchManager.SetPatchEnabled(patchId, true);
-        OnPatchEnabled?.Invoke(this, patchId);
+        try
+        {
+            patch.Patch();
+        }
+        catch (Exception exception)
+        {
+            Debug.LogException(exception);
+            Debug.LogError("Failed to enable patch: " + patchId);
+        }
+
+        var patchEnabled = patch.Status == YesPatchStatus.Patched;
+        _patchManager.SetPatchEnabled(patchId, patchEnabled);
+
+        if (patchEnabled)
+            OnPatchEnabled?.Invoke(this, patchId);
+        else
+            OnPatchDisabled?.Invoke(this, patchId);
+
+        OnPatchStatusChanged?.Invoke(this, patchId);
     }
 
     public void DisablePatch(string patchId)
@@ -38,8 +59,19 @@ internal sealed class YesPatchManagerStateManager
         if (patch is not { Status: YesPatchStatus.Patched })
             return;
 
-        patch.Unpatch();
+        try
+        {
+            patch.Unpatch();
+        }
+        catch (Exception exception)
+        {
+            Debug.LogException(exception);
+            Debug.LogError("Failed to unpatch: " + patchId);
+        }
+
         _patchManager.SetPatchEnabled(patchId, false);
+
         OnPatchDisabled?.Invoke(this, patchId);
+        OnPatchStatusChanged?.Invoke(this, patchId);
     }
 }

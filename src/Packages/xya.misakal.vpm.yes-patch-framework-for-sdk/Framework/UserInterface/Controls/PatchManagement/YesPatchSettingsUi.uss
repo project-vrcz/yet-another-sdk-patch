@@ -17,13 +17,15 @@
     height: 100%;
 }
 
+.patch-settings-header-root-container {
+    border-bottom-color: gray;
+    border-bottom-width: 1px;
+}
+
 .patch-settings-header-container {
     flex: none;
 
     padding: 14px;
-
-    border-bottom-color: gray;
-    border-bottom-width: 1px;
 
     display: flex;
     flex-direction: row;
@@ -52,5 +54,15 @@
 }
 
 #patch-settings-enabled-toggle {
+    -unity-font-style: bold;
+}
+
+#patch-error-message {
+    max-height: 100px;
+}
+
+#patch-error-tip {
+    color: red;
+    font-size: 24px;
     -unity-font-style: bold;
 }

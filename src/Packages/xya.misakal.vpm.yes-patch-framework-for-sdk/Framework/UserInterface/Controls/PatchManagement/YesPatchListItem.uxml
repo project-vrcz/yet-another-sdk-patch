@@ -9,6 +9,7 @@
 
     <engine:VisualElement class="patch-item-container">
         <engine:Toggle name="patch-toggle" />
+        <engine:Label name="patch-error-icon" text="X" tooltip="Patch Error" />
         <engine:VisualElement>
             <engine:Label name="patch-id" text="Patch ID" />
             <engine:Label name="patch-display-name" text="Patch DisplayName" />

@@ -8,14 +8,18 @@
     <Style src="YesPatchSettingsUi.uss" />
 
     <engine:VisualElement name="patch-settings-root-container">
-        <engine:VisualElement class="patch-settings-header-container">
-            <engine:VisualElement class="patch-settings-header-text-container">
-                <engine:Label text="Patch Display Name" name="patch-settings-header-display-name" />
-                <engine:Label text="Patch Description" name="patch-settings-header-description" />
+        <engine:VisualElement class="patch-settings-header-root-container">
+            <engine:VisualElement class="patch-settings-header-container">
+                <engine:VisualElement class="patch-settings-header-text-container">
+                    <engine:Label text="Patch Display Name" name="patch-settings-header-display-name" />
+                    <engine:Label text="Patch Description" name="patch-settings-header-description" />
+                </engine:VisualElement>
+                <engine:VisualElement>
+                    <engine:Toggle name="patch-settings-enabled-toggle" text="Enabled" />
+                    <engine:Label name="patch-error-tip" text="Patch Error"/>
+                </engine:VisualElement>
             </engine:VisualElement>
-            <engine:VisualElement>
-                <engine:Toggle name="patch-settings-enabled-toggle" text="Enabled" />
-            </engine:VisualElement>
+            <engine:TextField name="patch-error-message" multiline="true" readonly="true" />
         </engine:VisualElement>
         <engine:VisualElement name="patch-settings-custom-ui-container">
             <engine:VisualElement class="no-patch-settings-provided-container">
