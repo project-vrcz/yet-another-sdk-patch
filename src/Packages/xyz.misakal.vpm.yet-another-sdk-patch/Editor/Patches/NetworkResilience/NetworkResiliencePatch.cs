@@ -19,10 +19,10 @@ internal sealed class NetworkResiliencePatch : YesPatchBase
 
     private readonly Harmony _harmony = new("xyz.misakal.vpm.yet-another-sdk-patch.network-resilience");
 
-    private const string GetClientMethodName = "GetClient";
-
     private static VrcApiHttpClientFactory? _httpClientFactory;
     private static VrcApiHttpClientFactory? _noVrcApiHttpClientFactory;
+
+    private const string GetClientMethodName = "GetClient";
 
     private const string VrcCookieBaseUrlFieldName = "VRC_COOKIE_BASE_URL";
     private static FieldInfo? _vrcCookieBaseUrlFieldInfo;

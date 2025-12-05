@@ -24,30 +24,27 @@ internal sealed class VrcApiHttpClientFactory
         { "Accept", "application/json" }
     };
 
-    private VrcApiHttpClientInstance? _clientInstance;
+    private readonly HttpClient _client;
+    private readonly CookieContainer _cookieContainer;
 
     public VrcApiHttpClientFactory(SetupCookieContainerGetCookiesDelegate? setupCookieContainer = null)
     {
         _setupCookieContainer = setupCookieContainer ?? (_ => { });
+
+        _cookieContainer = new CookieContainer();
+        _client = CreateClientInternal(_cookieContainer);
     }
 
     public HttpClient GetOrCreateClient()
     {
-        if (_clientInstance is not null)
-        {
-            var cookieContainer = _clientInstance.CookieContainer;
-            cookieContainer.Clear();
-            _setupCookieContainer(cookieContainer);
+        _cookieContainer.Clear();
+        _setupCookieContainer(_cookieContainer);
 
-            return _clientInstance.Client;
-        }
-
-        return CreateClientCore();
+        return _client;
     }
 
-    private HttpClient CreateClientCore()
+    private HttpClient CreateClientInternal(CookieContainer cookieContainer)
     {
-        var cookieContainer = new CookieContainer();
         _setupCookieContainer(cookieContainer);
 
         var handler = new HttpClientHandler
@@ -61,19 +58,6 @@ internal sealed class VrcApiHttpClientFactory
             client.DefaultRequestHeaders.Add(header.Key, header.Value);
         }
 
-        _clientInstance = new VrcApiHttpClientInstance(client, cookieContainer);
         return client;
-    }
-
-    private sealed class VrcApiHttpClientInstance
-    {
-        public readonly HttpClient Client;
-        public readonly CookieContainer CookieContainer;
-
-        public VrcApiHttpClientInstance(HttpClient client, CookieContainer cookieContainer)
-        {
-            CookieContainer = cookieContainer;
-            Client = client;
-        }
     }
 }
