@@ -188,7 +188,6 @@ jobs:
     env:
       repo_dir: ${{ github.workspace }}/repo
       assets_path: ${{ github.workspace }}/assets
-      artifact_download_path: ${{ github.workspace }}/artifact-download
       note_path: ${{ github.workspace }}/note
       release_git_tag: placeholder
 
@@ -243,7 +242,7 @@ jobs:
       - name: Download Artifact
         uses: actions/download-artifact@v5
         with:
-          path: ${{ env.artifact_download_path }}
+          path: ${{ env.assets_path }}
           artifact-ids: ${{ needs.make-package.outputs.artifact-id }}
 
       - name: Download Release Note
