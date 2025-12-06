@@ -33,8 +33,8 @@ on:
 
 env:
   path_to_repo: ${{ github.workspace }}/repo/
-  path_to_package_folder: ${{ github.workflow }}/repo/src/Packages/${{ github.event.inputs.package }}/
-  path_to_artiface_zip: ${{ github.workflow }}/artifacts/${{ github.event.inputs.package }}.zip
+  path_to_package_folder: ${{ github.workspace }}/repo/src/Packages/${{ github.event.inputs.package }}/
+  path_to_artiface_zip: ${{ github.workspace }}/artifacts/${{ github.event.inputs.package }}.zip
 
 jobs:
   make-package:
