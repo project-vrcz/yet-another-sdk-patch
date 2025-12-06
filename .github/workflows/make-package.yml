@@ -34,6 +34,7 @@ on:
 env:
   path_to_repo: ${{ github.workspace }}/repo/
   path_to_package_folder: ${{ github.workspace }}/repo/src/Packages/${{ inputs.package }}/
+  path_to_artifact_folder: ${{ github.workspace }}/artifacts/
   path_to_artiface_zip: ${{ github.workspace }}/artifacts/${{ inputs.package }}.zip
 
 jobs:
@@ -51,9 +52,12 @@ jobs:
           path: ${{ env.path_to_repo }}
 
       - name: Make Package Zip
-        run: zip -r $ZIP_FILE .
+        run: |
+          mkdir -p $PATH_TO_ARTIFACT_FOLDER
+          zip -r $ZIP_FILE .
         env:
           ZIP_FILE: ${{ env.path_to_artiface_zip }}
+          PATH_TO_ARTIFACT_FOLDER: ${{ env.path_to_artifact_folder }}
         shell: bash
         working-directory: ${{ env.path_to_package_folder }}
 
