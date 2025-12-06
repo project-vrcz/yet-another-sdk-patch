@@ -193,15 +193,32 @@ jobs:
       release_git_tag: placeholder
 
     steps:
-      - name: Check is Short name is placeholder
-        shell: bash
-        env:
-          SHORT_NAME: ${{ env.package_short_name }}
+      - name: Get Package Short Name
+        id: get-package-short-name
         run: |
-          if [ "$SHORT_NAME" = "placeholder" ]; then
-            echo "Error: package_short_name is not set correctly."
-            exit 1
-          fi
+          case $PACKAGE_NAME in
+            "xyz.misakal.vpm.yes-patch-framework-for-sdk")
+              short_name="framework"
+              ;;
+            "xyz.misakal.vpm.yet-another-sdk-patch")
+              short_name="sdk-patch"
+              ;;
+            "xyz.misakal.vpm.yet-another-sdk-patch.avatars")
+              short_name="avatars-sdk-patch"
+              ;;
+            "xyz.misakal.vpm.yet-another-sdk-patch.worlds")
+              short_name="worlds-sdk-patch"
+              ;;
+            *)
+              echo "Unknown package: $PACKAGE_NAME"
+              exit 1
+              ;;
+          esac
+
+          echo "package_short_name=$short_name" >> $GITHUB_ENV
+        env:
+          PACKAGE_NAME: ${{ inputs.package }}
+        shell: bash
 
       - name: Set Git Tag
         shell: bash
