@@ -15,7 +15,8 @@
         "YPF4VRC.0Harmony.dll",
         "VRCCore-Editor.dll",
         "Polly.Core.dll",
-        "Polly.dll"
+        "Polly.dll",
+        "StandardSocketsHttpHandler.dll"
     ],
     "autoReferenced": false,
     "defineConstraints": [],

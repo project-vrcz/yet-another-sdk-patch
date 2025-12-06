@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
 using UnityEngine;
 using VRC;
 using VRC.Core;
@@ -47,14 +49,17 @@ internal sealed class VrcApiHttpClientFactory
     {
         _setupCookieContainer(cookieContainer);
 
-        var innerHandler = new HttpClientHandler
+        var innerHandler = new StandardSocketsHttpHandler
         {
             CookieContainer = cookieContainer,
-            Proxy = new NetworkResilienceWebProxy()
+            Proxy = new NetworkResilienceWebProxy(),
+            ConnectTimeout = TimeSpan.FromSeconds(5),
+            PooledConnectionIdleTimeout = TimeSpan.Zero
         };
 
         var handler = new ResilienceHttpHandler(new HttpLoggingHandler(innerHandler));
         var client = new HttpClient(handler);
+
         foreach (var header in _defaultRequestHeaders)
         {
             client.DefaultRequestHeaders.Add(header.Key, header.Value);
