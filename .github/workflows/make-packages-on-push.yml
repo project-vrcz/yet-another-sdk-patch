@@ -1,0 +1,24 @@
+name: Make Packages on Push
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  make-package:
+    strategy:
+      matrix:
+        package:
+          - xyz.misakal.vpm.yes-patch-framework-for-sdk
+          - xyz.misakal.vpm.yet-another-sdk-patch
+          - xyz.misakal.vpm.yet-another-sdk-patch.avatars
+          - xyz.misakal.vpm.yet-another-sdk-patch.worlds
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Build Package
+        uses: ./.github/workflows/make-package.yml
+        with:
+          ref: ${{ github.ref_name }}
+          package: ${{ matrix.package }}
