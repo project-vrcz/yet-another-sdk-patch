@@ -1,0 +1,294 @@
+name: Release Package
+
+concurrency:
+  group: releasing
+
+on:
+  workflow_dispatch:
+    inputs:
+      pre-release:
+        type: boolean
+        required: true
+        description: Is Pre-release
+        default: true
+      new-version:
+        required: true
+        description: Version to Release, e.g 1.0.0
+        type: string
+      package:
+        type: choice
+        description: package to make
+        required: true
+        options:
+          - xyz.misakal.vpm.yes-patch-framework-for-sdk
+          - xyz.misakal.vpm.yet-another-sdk-patch
+          - xyz.misakal.vpm.yet-another-sdk-patch.avatars
+          - xyz.misakal.vpm.yet-another-sdk-patch.worlds
+
+env:
+  releasing_branch: releasing
+  changelog_artifact_name: changelog
+  release_note_artifact_name: release-note
+  release_note_file_name: release-note
+  path_to_package_json: src/Packages/${{ inputs.package }}/package.json
+  package_short_name: placeholder
+
+jobs:
+  update-changelog:
+    permissions:
+      contents: write
+
+    runs-on: ubuntu-latest
+
+    outputs:
+      changelog-artifact-id: ${{ steps.upload-changelog.outputs.artifact-id }}
+      release-note-artifact-id: ${{ steps.upload-release-note.outputs.artifact-id }}
+
+    env:
+      repo_dir: ${{ github.workspace }}/repo
+      path_to_release_note: ${{ github.workspace }}/release-note
+      path_to_changes_log: placeholder
+
+    steps:
+      - name: Get Package Short Name
+        id: get-package-short-name
+        run: |
+          case $PACKAGE_NAME in
+            "xyz.misakal.vpm.yes-patch-framework-for-sdk")
+              short_name="framework"
+              ;;
+            "xyz.misakal.vpm.yet-another-sdk-patch")
+              short_name="sdk-patch"
+              ;;
+            "xyz.misakal.vpm.yet-another-sdk-patch.avatars")
+              short_name="avatars-sdk-patch"
+              ;;
+            "xyz.misakal.vpm.yet-another-sdk-patch.worlds")
+              short_name="worlds-sdk-patch"
+              ;;
+            *)
+              echo "Unknown package: $PACKAGE_NAME"
+              exit 1
+              ;;
+          esac
+
+          echo "package_short_name=$short_name" >> $GITHUB_ENV
+        env:
+          PACKAGE_NAME: ${{ inputs.package }}
+        shell: bash
+
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          path: ${{ env.repo_dir }}
+          submodules: recursive
+
+      - name: Get Path to Changes Log
+        run: |
+          case $PACKAGE_NAME in
+            "xyz.misakal.vpm.yes-patch-framework-for-sdk")
+              change_log_name="CHANGELOG-framework.md"
+              ;;
+            "xyz.misakal.vpm.yet-another-sdk-patch")
+              change_log_name="CHANGELOG-sdk-patch.md"
+              ;;
+            "xyz.misakal.vpm.yet-another-sdk-patch.avatars")
+              change_log_name="CHANGELOG-avatars-sdk-patch.md"
+              ;;
+            "xyz.misakal.vpm.yet-another-sdk-patch.worlds")
+              change_log_name="CHANGELOG-worlds-sdk-patch.md"
+              ;;
+            *)
+              echo "Unknown package: $PACKAGE_NAME"
+              exit 1
+              ;;
+          esac
+
+          change_log_path="$PATH_TO_REPO/$change_log_name"
+
+          if [ ! -f "$change_log_path" ]; then
+            echo "File not found: $change_log_path"
+            exit 1
+          fi
+
+          echo "path_to_changes_log=$change_log_path" >> $GITHUB_ENV
+        env:
+          PACKAGE_NAME: ${{ inputs.package }}
+          PATH_TO_REPO: ${{ env.repo_dir }}
+        shell: bash
+
+      - name: Setup Git User
+        working-directory: ${{ env.repo_dir }}
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Update package.json
+        working-directory: ${{ env.repo_dir }}
+        run: dotnet run dev/scripts/update-package-version.cs $PATH_PACKAGE_JSON $NEW_VERSION
+        shell: bash
+        env:
+          NEW_VERSION: ${{ inputs.new-version }}
+          PATH_PACKAGE_JSON: ${{ env.repo_dir }}/${{ env.path_to_package_json }}
+
+      - name: Extact Release Note and Update Changelog
+        working-directory: ${{ env.repo_dir }}
+        env:
+          NEW_VERSION: ${{ inputs.new-version }}
+          RELEASE_NOTE_PATH: ${{ env.path_to_release_note }}
+        run: dotnet run dev/scripts/release-changelog.cs -- ${{ env.path_to_changes_log }} $NEW_VERSION --print-changes-to-stdout ${{ inputs.pre-release && '--keep-unreleased-changes' || '' }} > $RELEASE_NOTE_PATH
+        shell: bash
+
+      - name: Upload CHANGELOG.md
+        id: upload-changelog
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.changelog_artifact_name }}
+          path: ${{ env.path_to_changes_log }}
+
+      - name: Upload Release Note
+        id: upload-release-note
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.release_note_artifact_name }}
+          path: ${{ env.path_to_release_note }}
+
+      - name: Commit and Push
+        working-directory: ${{ env.repo_dir }}
+        env:
+          NEW_VERSION: ${{ inputs.new-version }}
+          RELEASING_BRANCH: ${{ env.releasing_branch }}
+          PACKAGE_NAME: ${{ inputs.package }}
+        shell: bash
+        run: |
+          # create release commit, push it, and create relreasing branch
+          git switch -c $RELEASING_BRANCH
+          git commit -am "chore: release $PACKAGE_NAME@$NEW_VERSION"
+          git push -f -u origin releasing
+
+  make-package:
+    needs: update-changelog
+    uses: ./.github/workflows/make-package.yml
+    with:
+      package: ${{ inputs.package }}
+      ref: releasing
+
+  release:
+    needs: [update-changelog, make-package]
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    env:
+      repo_dir: ${{ github.workspace }}/repo
+      assets_path: ${{ github.workspace }}/assets
+      artifact_download_path: ${{ github.workspace }}/artifact-download
+      note_path: ${{ github.workspace }}/note
+      release_git_tag: placeholder
+
+    steps:
+      - name: Check is Short name is placeholder
+        shell: bash
+        env:
+          SHORT_NAME: ${{ env.package_short_name }}
+        run: |
+          if [ "$SHORT_NAME" = "placeholder" ]; then
+            echo "Error: package_short_name is not set correctly."
+            exit 1
+          fi
+
+      - name: Set Git Tag
+        shell: bash
+        env:
+          NEW_VERSION: ${{ inputs.new-version }}
+          SHORT_NAME: ${{ env.package_short_name }}
+        run: echo "release_git_tag=$SHORT_NAME-v$NEW_VERSION" >> $GITHUB_ENV
+
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          path: ${{ env.repo_dir }}
+          ref: ${{ env.releasing_branch }}
+          fetch-depth: 2
+
+      - name: Setup Git User
+        working-directory: ${{ env.repo_dir }}
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+
+      - name: Download Artifact
+        uses: actions/download-artifact@v5
+        with:
+          path: ${{ env.artifact_download_path }}
+          artifact-ids: ${{ needs.make-package.outputs.artifact-id }}
+
+      - name: Download Release Note
+        uses: actions/download-artifact@v5
+        with:
+          artifact-ids: ${{ needs.update-changelog.outputs.release-note-artifact-id }}
+          path: ${{ env.note_path }}
+
+      - name: Push Tag
+        working-directory: ${{ env.repo_dir }}
+        env:
+          GIT_TAG: ${{ env.release_git_tag }}
+          RELEASING_REF: ${{ env.releasing_branch }}
+          ACTION_REF: ${{ github.ref_name }}
+        shell: bash
+        run: |
+          git tag $GIT_TAG
+          git push --tags
+          # create main branch from releasing branch and fetch
+          git switch -c $ACTION_REF
+          git push -u origin $ACTION_REF
+
+      - name: Make Release
+        env:
+          GIT_TAG: ${{ env.release_git_tag }}
+          PATH_TO_NOTES: ${{ env.note_path }}/${{ env.release_note_file_name }}
+          PATH_TO_RELEASE_ASSETS: ${{ env.assets_path }}
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        working-directory: ${{ env.repo_dir }}
+        run: |
+          gh release create \
+          ${{ inputs.pre-release && '--prerelease' || '' }} \
+          --notes-file $PATH_TO_NOTES \
+          --verify-tag \
+          --fail-on-no-commits \
+          $GIT_TAG \
+          $PATH_TO_RELEASE_ASSETS/*
+
+  cleanup:
+    needs: [update-changelog, make-package, release]
+    if: ${{ !failure() && !cancelled() }}
+
+    permissions:
+      contents: write
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ env.releasing_branch }}
+          fetch-depth: 2
+
+      - name: Setup Git User
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+
+      - name: Delete Releasing Branch
+        env:
+          BRANCH_TO_DELETE: ${{ env.releasing_branch }}
+        shell: bash
+        run: git push --delete origin $BRANCH_TO_DELETE
