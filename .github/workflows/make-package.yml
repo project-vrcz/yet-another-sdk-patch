@@ -65,5 +65,5 @@ jobs:
         uses: actions/upload-artifact@v5
         id: upload-artifact
         with:
-          name: ${{ github.event.inputs.package }}.zip
+          name: ${{ inputs.package }}.zip
           path: ${{ env.path_to_artiface_zip }}
