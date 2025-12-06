@@ -1,7 +1,7 @@
 {
   "name": "xyz.misakal.vpm.yet-another-sdk-patch",
   "displayName": "Yet Another Patch for VRChat SDK",
-  "version": "0.1.0",
+  "version": "0.1.0-beta.1",
   "hideInEditor": true,
   "description": "Provide Network Resilience ability, hotfix and add some quality of life features for VRChat SDK.",
   "unity": "2022.3",
