@@ -1,0 +1,69 @@
+name: Make Package
+
+on:
+  workflow_call:
+    outputs:
+      artifact-id:
+        description: The ID of the uploaded artifact
+        value: ${{ jobs.make-package.outputs.artifact-id}}
+    inputs:
+      ref:
+        type: string
+        description: git ref to build
+        default: ${{ github.ref_name }}
+      package:
+        type: string
+        description: package to make
+        required: true
+  workflow_dispatch:
+    inputs:
+      ref:
+        type: string
+        description: git ref to build
+        default: main
+      package:
+        type: choice
+        description: package to make
+        required: true
+        options:
+          - xyz.misakal.vpm.yes-patch-framework-for-sdk
+          - xyz.misakal.vpm.yet-another-sdk-patch
+          - xyz.misakal.vpm.yet-another-sdk-patch.avatars
+          - xyz.misakal.vpm.yet-another-sdk-patch.worlds
+
+env:
+  path_to_repo: ${{ github.workspace }}/repo/
+  path_to_package_folder: ${{ github.workspace }}/repo/src/Packages/${{ inputs.package }}/
+  path_to_artifact_folder: ${{ github.workspace }}/artifacts/
+  path_to_artiface_zip: ${{ github.workspace }}/artifacts/${{ inputs.package }}.zip
+
+jobs:
+  make-package:
+    runs-on: ubuntu-latest
+
+    outputs:
+      artifact-id: ${{ steps.upload-artifact.outputs.artifact-id }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ inputs.ref }}
+          path: ${{ env.path_to_repo }}
+
+      - name: Make Package Zip
+        run: |
+          mkdir -p $PATH_TO_ARTIFACT_FOLDER
+          zip -r $ZIP_FILE .
+        env:
+          ZIP_FILE: ${{ env.path_to_artiface_zip }}
+          PATH_TO_ARTIFACT_FOLDER: ${{ env.path_to_artifact_folder }}
+        shell: bash
+        working-directory: ${{ env.path_to_package_folder }}
+
+      - name: Upload Package Zip
+        uses: actions/upload-artifact@v5
+        id: upload-artifact
+        with:
+          name: ${{ inputs.package }}.zip
+          path: ${{ env.path_to_artiface_zip }}

@@ -17,6 +17,5 @@
     "patch",
     "patcher"
   ],
-  "vpmDependencies": {
-  }
+  "vpmDependencies": {}
 }
