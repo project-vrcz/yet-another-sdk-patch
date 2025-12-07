@@ -141,7 +141,9 @@ jobs:
         env:
           NEW_VERSION: ${{ inputs.new-version }}
           RELEASE_NOTE_PATH: ${{ env.path_to_release_note }}
-        run: dotnet run dev/scripts/release-changelog.cs -- ${{ env.path_to_changes_log }} $NEW_VERSION --print-changes-to-stdout ${{ inputs.pre-release && '--keep-unreleased-changes' || '' }} > $RELEASE_NOTE_PATH
+          GITHUB_REPO_URL: ${{ github.server_url }}/${{ github.repository }}
+          GIT_TAG_PREFIX: ${{ env.package_short_name }}-
+        run: dotnet run dev/scripts/release-changelog.cs -- ${{ env.path_to_changes_log }} $NEW_VERSION $GITHUB_REPO_URL --git-tag-prefix $GIT_TAG_PREFIX --print-changes-to-stdout ${{ inputs.pre-release && '--keep-unreleased-changes' || '' }} > $RELEASE_NOTE_PATH
         shell: bash
 
       - name: Upload CHANGELOG.md
