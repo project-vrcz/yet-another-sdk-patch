@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Fix .sb Forget to Crop Thumbnail Patch
+  - Updated to only run on SDK versions 3.9.0 to 3.10.0, as VRChat fixed the issue in SDK 3.10.1.
+
 ### Added
 
 - Fix .sb Forget to Crop Thumbnail Patch

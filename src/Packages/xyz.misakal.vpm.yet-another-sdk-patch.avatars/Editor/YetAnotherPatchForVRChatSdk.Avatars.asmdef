@@ -21,6 +21,11 @@
             "name": "com.vrchat.avatars",
             "expression": "3.9.0",
             "define": "YAP4VRC_VRCHAT_AVATARS_3_9_0_OR_NEWER"
+        },
+        {
+            "name": "com.vrchat.avatars",
+            "expression": "3.10.1",
+            "define": "YAP4VRC_VRCHAT_AVATARS_3_10_1_OR_NEWER"
         }
     ],
     "noEngineReferences": false
