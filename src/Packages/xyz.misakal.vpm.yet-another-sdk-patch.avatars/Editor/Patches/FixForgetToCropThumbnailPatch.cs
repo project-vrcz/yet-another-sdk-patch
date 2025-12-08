@@ -14,9 +14,9 @@ internal sealed class FixForgetToCropThumbnailPatch : YesPatchBase
     public override string Category => "Avatars SDK bugs fixes";
 
     public override string Description =>
-        "Fix the issue that VRChat SDK forgets to crop the avatar thumbnail when creating new avatar after 3.9.0.";
+        "Fix the issue that VRChat SDK forgets to crop the avatar thumbnail when creating new avatar in SDK 3.9.0 to 3.10.0. (Fixed by VRChat in SDK 3.10.1)";
 
-#if YAP4VRC_VRCHAT_AVATARS_3_9_0_OR_NEWER
+#if YAP4VRC_VRCHAT_AVATARS_3_9_0_OR_NEWER && !YAP4VRC_VRCHAT_AVATARS_3_10_1_OR_NEWER
     private readonly Harmony _harmony =
         new("xyz.misakal.vpm.yet-another-sdk-patch.avatars.fix-forget-to-crop-thumbnail");
 
