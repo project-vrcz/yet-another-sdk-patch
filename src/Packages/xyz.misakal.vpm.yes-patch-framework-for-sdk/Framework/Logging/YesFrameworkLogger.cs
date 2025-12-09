@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEditor;
-using UnityEngine.SceneManagement;
 using YesPatchFrameworkForVRChatSdk.PatchApi.Logging;
 using Object = UnityEngine.Object;
 
@@ -10,20 +7,6 @@ namespace YesPatchFrameworkForVRChatSdk.Logging;
 
 internal sealed class YesFrameworkLogger : IYesLogger
 {
-    [MenuItem("Tools/Log Something")]
-    public static void Log()
-    {
-        try
-        {
-            throw new Exception("Test");
-        }
-        catch (Exception e)
-        {
-            var rootGameObject = SceneManager.GetActiveScene().GetRootGameObjects().First();
-            Instance.Log(YesLogLevel.Error, "YesFrameworkLogger", "This is a test log message.", e, rootGameObject);
-        }
-    }
-
     public static YesFrameworkLogger Instance { get; } = new();
 
     private readonly YesUnityDebugLogger _unityLogger = new();
