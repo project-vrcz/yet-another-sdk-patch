@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### Added
 
 - Allow user disable patch when patch error from gui. [`#7`](https://github.com/project-vrcz/yet-another-sdk-patch/pull/7)
+- Show Windows Menu Items in both `Tools/Yes! Patch Frameowrk` and `Window/Yes! Patch Framework` in Editor Toolbar. [`#10`](https://github.com/project-vrcz/yet-another-sdk-patch/pull/10)
 
 #### Changed
 
