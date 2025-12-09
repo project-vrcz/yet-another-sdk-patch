@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Migrate to Yes! Patch Framework Logging system.
 - Use GUID instead of Path to load UXML asset. [`#12`](https://github.com/project-vrcz/yet-another-sdk-patch/pull/12)
+- Rename to `Yet Another Patch for VRChat SDK - Base`. [`#14`](https://github.com/project-vrcz/yet-another-sdk-patch/pull/14)
 
 ## [0.1.0-beta.2] - 2025-12-07
 
