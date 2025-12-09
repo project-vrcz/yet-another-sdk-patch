@@ -16,5 +16,5 @@ jobs:
 
     uses: ./.github/workflows/make-package.yml
     with:
-      ref: ${{ github.ref_name }}
+      ref: ${{ github.ref }}
       package: ${{ matrix.package }}
