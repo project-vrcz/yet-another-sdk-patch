@@ -5,6 +5,7 @@ using HarmonyLib;
 using UnityEngine;
 using VRC.Core;
 using YesPatchFrameworkForVRChatSdk.PatchApi;
+using YesPatchFrameworkForVRChatSdk.PatchApi.Logging;
 
 namespace YetAnotherPatchForVRChatSdk.Patches;
 
@@ -14,6 +15,8 @@ internal sealed class NoTelemetryPatch : YesPatchBase
     public override string DisplayName => "Disable SDK Telemetry";
     public override string Description => "Disables all telemetry and analytics in the VRChat SDK.";
     public override string Category => "Privacy?";
+
+    private static readonly YesLogger Logger = new(nameof(NoTelemetryPatch));
 
     private readonly Harmony _harmony = new("xyz.misakal.vpm.yet-another-sdk-patch.no-telemetry");
 
@@ -51,14 +54,14 @@ internal sealed class NoTelemetryPatch : YesPatchBase
             if (!File.Exists(cachePath))
                 continue;
 
-            Debug.Log("[NoTelemetryPatch] Deleting Amplitude cache file: " + cachePath);
+            Logger.LogDebug("[NoTelemetryPatch] Deleting Amplitude cache file: " + cachePath);
             try
             {
                 File.Delete(cachePath);
             }
             catch (Exception e)
             {
-                Debug.LogWarning("[NoTelemetryPatch] Failed to delete Amplitude cache file: " + cachePath + "\n" + e);
+                Logger.LogWarning("[NoTelemetryPatch] Failed to delete Amplitude cache file: " + cachePath + "\n" + e);
             }
         }
     }

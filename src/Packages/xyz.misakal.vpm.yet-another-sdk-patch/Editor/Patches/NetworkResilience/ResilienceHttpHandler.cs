@@ -7,11 +7,14 @@ using System.Threading.Tasks;
 using Polly;
 using Polly.Retry;
 using UnityEngine;
+using YesPatchFrameworkForVRChatSdk.PatchApi.Logging;
 
 namespace YetAnotherPatchForVRChatSdk.Patches.NetworkResilience;
 
 internal sealed class ResilienceHttpHandler : DelegatingHandler
 {
+    private const string LoggerSource = nameof(NetworkResiliencePatch) + "." + nameof(ResilienceHttpHandler);
+
     private readonly ResiliencePipeline _pipeline;
 
     public ResilienceHttpHandler(HttpMessageHandler innerHandler) : base(innerHandler)
@@ -29,8 +32,11 @@ internal sealed class ResilienceHttpHandler : DelegatingHandler
             Delay = TimeSpan.FromSeconds(3),
             OnRetry = arguments =>
             {
-                Debug.LogWarning(
-                    $"Retrying HTTP request. Attempt {arguments.AttemptNumber}. Delay {arguments.RetryDelay.ToString()}.");
+                YesLogger.LogWarning(
+                    arguments.Outcome.Exception,
+                    LoggerSource,
+                    $"Retrying HTTP request. Attempt {arguments.AttemptNumber}. Delay {arguments.RetryDelay.ToString()}.",
+                    null);
 
                 return default;
             }
@@ -42,25 +48,21 @@ internal sealed class ResilienceHttpHandler : DelegatingHandler
         _pipeline = builder.Build();
     }
 
-    protected override Task<HttpResponseMessage> SendAsync(
+    protected override async Task<HttpResponseMessage> SendAsync(
         HttpRequestMessage request,
         CancellationToken cancellationToken)
     {
-        return _pipeline.ExecuteAsync(
-                async token =>
-                {
-                    try
-                    {
-                        return await base.SendAsync(request, token);
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.LogWarning("Http Request failed: " + ex);
-                        Debug.LogException(ex);
-                        throw;
-                    }
-                },
-                cancellationToken)
-            .AsTask();
+        try
+        {
+            return await _pipeline.ExecuteAsync(
+                    async token => await base.SendAsync(request, token),
+                    cancellationToken)
+                .AsTask();
+        }
+        catch (Exception ex)
+        {
+            YesLogger.LogError(ex, LoggerSource, "HTTP request failed after retries.", null);
+            throw;
+        }
     }
 }

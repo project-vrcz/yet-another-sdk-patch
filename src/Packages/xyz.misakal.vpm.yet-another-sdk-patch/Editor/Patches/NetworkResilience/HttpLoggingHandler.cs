@@ -2,12 +2,14 @@
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using UnityEngine;
+using YesPatchFrameworkForVRChatSdk.PatchApi.Logging;
 
 namespace YetAnotherPatchForVRChatSdk.Patches.NetworkResilience;
 
 internal sealed class HttpLoggingHandler : DelegatingHandler
 {
+    private const string LoggerSource = nameof(NetworkResiliencePatch) + "." + nameof(HttpLoggingHandler);
+
     public HttpLoggingHandler(HttpMessageHandler innerHandler) : base(innerHandler)
     {
     }
@@ -15,7 +17,7 @@ internal sealed class HttpLoggingHandler : DelegatingHandler
     protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
         CancellationToken cancellationToken)
     {
-        Debug.Log($"{request.Method} {request.RequestUri.GetLeftPart(UriPartial.Path)}");
+        YesLogger.LogDebug(LoggerSource, $"{request.Method} {request.RequestUri.GetLeftPart(UriPartial.Path)}");
         return base.SendAsync(request, cancellationToken);
     }
 }

@@ -59,7 +59,6 @@ internal sealed class VrcApiHttpClientFactory
 
         var handler = new ResilienceHttpHandler(new HttpLoggingHandler(innerHandler));
         var client = new HttpClient(handler);
-        Debug.Log("Timeout set to InfiniteTimeSpan for VrcApiHttpClientFactory HttpClient.");
         client.Timeout = Timeout.InfiniteTimeSpan;
 
         foreach (var header in _defaultRequestHeaders)

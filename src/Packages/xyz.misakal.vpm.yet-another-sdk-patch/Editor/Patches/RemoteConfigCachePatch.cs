@@ -8,6 +8,7 @@ using HarmonyLib;
 using UnityEngine;
 using VRC.Core;
 using YesPatchFrameworkForVRChatSdk.PatchApi;
+using YesPatchFrameworkForVRChatSdk.PatchApi.Logging;
 
 namespace YetAnotherPatchForVRChatSdk.Patches;
 
@@ -17,6 +18,8 @@ internal sealed class RemoteConfigCachePatch : YesPatchBase
     public override string DisplayName => "Remote Config Cache";
     public override string Description => "Cache VRChat Api Config to reduce domain reload times.";
     public override string Category => "Base SDK Quality of Life Improvements";
+    
+    private static readonly YesLogger Logger = new(nameof(RemoteConfigCachePatch));
 
     private readonly Harmony _harmonyInstance = new("xyz.misakal.vpm.remote-config-cache-patch");
 
@@ -43,13 +46,12 @@ internal sealed class RemoteConfigCachePatch : YesPatchBase
         {
             if (container is not ApiDictContainer dictContainer)
             {
-                Debug.LogError(
-                    "[RemoteConfigCachePatch] Failed to fetch API config: response apiContainer is not ApiDictContainer.");
+                Logger.LogError("Failed to fetch API config: response apiContainer is not ApiDictContainer.");
                 onError.Invoke();
                 return;
             }
 
-            Debug.Log($"[RemoteConfigCachePatch] Fetched API config for {container}. Caching to disk.");
+            Logger.LogDebug($"Fetched API config for {container}. Caching to disk.");
             var responseDict = dictContainer.ResponseDictionary;
             SaveApiConfigToDisk(responseDict);
 
@@ -59,8 +61,8 @@ internal sealed class RemoteConfigCachePatch : YesPatchBase
 
         responseContainer.OnError += container =>
         {
-            Debug.LogError(
-                $"[RemoteConfigCachePatch] Failed to fetch API config from server. (code: {container.Code} msg: {container.Text} err: {container.Error})");
+            Logger.LogError(
+                $"Failed to fetch API config from server. (code: {container.Code} msg: {container.Text} err: {container.Error})");
             onError.Invoke();
         };
 
@@ -89,7 +91,7 @@ internal sealed class RemoteConfigCachePatch : YesPatchBase
         var timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString();
         File.WriteAllText(timestampPath, timestamp);
 
-        Debug.Log("[RemoteConfigCachePatch] Saved API config to disk cache.");
+        Logger.LogDebug("Saved API config to disk cache.");
     }
 
     private static IReadOnlyDictionary<string, Json.Token>? GetCachedApiConfigFromDisk()
@@ -112,7 +114,7 @@ internal sealed class RemoteConfigCachePatch : YesPatchBase
         if (config == null)
             return null;
 
-        Debug.Log("[RemoteConfigCachePatch] Loaded API config from disk cache.");
+        Logger.LogDebug("Loaded API config from disk cache.");
         return config;
     }
 
@@ -180,13 +182,13 @@ internal sealed class RemoteConfigCachePatch : YesPatchBase
         var configField = AccessTools.Field(typeof(BaseConfig), ConfigFieldName);
         if (configField == null)
         {
-            Debug.LogWarning(
-                "[RemoteConfigCachePatch] Failed to apply config: could not find 'config' field.");
+            Logger.LogWarning(
+                "Failed to apply config: could not find 'config' field.");
             return false;
         }
 
         configField.SetValue(configBase, config);
-        Debug.Log("[RemoteConfigCachePatch] Applied cached API config to RemoteConfig instance.");
+        Logger.LogDebug("Applied cached API config to RemoteConfig instance.");
         return true;
     }
 
@@ -198,8 +200,8 @@ internal sealed class RemoteConfigCachePatch : YesPatchBase
     {
         if (__instance is not RemoteConfig remoteConfig)
         {
-            Debug.LogWarning(
-                "[RemoteConfigCachePatch] Failed to patch RemoteConfig.FetchConfig: instance is not RemoteConfig. Executing original method.");
+            Logger.LogWarning(
+                "Failed to patch RemoteConfig.FetchConfig: instance is not RemoteConfig. Executing original method.");
             return true;
         }
 
@@ -211,8 +213,8 @@ internal sealed class RemoteConfigCachePatch : YesPatchBase
             var diskConfig = ProcessConfig(diskCache);
             if (!TryApplyConfig(remoteConfig, diskConfig))
             {
-                Debug.LogWarning(
-                    "[RemoteConfigCachePatch] Failed to apply cached API config. Executing original method.");
+                Logger.LogWarning(
+                    "Failed to apply cached API config. Executing original method.");
                 return true;
             }
 
@@ -222,14 +224,14 @@ internal sealed class RemoteConfigCachePatch : YesPatchBase
 
         // If no valid disk cache, fetch from server
         var isSuccess = false;
-        Debug.Log("[RemoteConfigCachePatch] Trying to fetch API config from server...");
+        Logger.LogInfo("Trying to fetch API config from server...");
         FetchAndCachedApiConfig(fetchedConfig =>
         {
             // Apply fetched config
             if (!TryApplyConfig(remoteConfig, fetchedConfig))
             {
-                Debug.LogWarning(
-                    "[RemoteConfigCachePatch] Failed to apply fetched API config. Executing original method.");
+                Logger.LogWarning(
+                    "Failed to apply fetched API config. Executing original method.");
                 isSuccess = false;
                 return;
             }
@@ -238,11 +240,11 @@ internal sealed class RemoteConfigCachePatch : YesPatchBase
         }, () =>
         {
             // On error, try to use disk cache ignoring expiry
-            Debug.LogWarning("[RemoteConfigCachePatch] Failed to fetch API config. Will use disk cache if available.");
+            Logger.LogWarning("Failed to fetch API config. Will use disk cache if available.");
             if (GetCachedApiConfigFromDiskIgnoreExpiry() is not { } diskCacheIgnoreExpiry)
             {
                 // No valid disk cache available, report error to caller
-                Debug.LogError("[RemoteConfigCachePatch] No valid disk cache available. Report error to caller.");
+                Logger.LogError("No valid disk cache available. Load Api Config Failed.");
                 isSuccess = false;
                 return;
             }
@@ -251,8 +253,8 @@ internal sealed class RemoteConfigCachePatch : YesPatchBase
 
             if (!TryApplyConfig(remoteConfig, diskConfig))
             {
-                Debug.LogError(
-                    "[RemoteConfigCachePatch] Failed to apply cached API config. Report error to caller.");
+                Logger.LogError(
+                    "Failed to apply cached API config. Load Api Config Failed.");
                 isSuccess = false;
                 return;
             }

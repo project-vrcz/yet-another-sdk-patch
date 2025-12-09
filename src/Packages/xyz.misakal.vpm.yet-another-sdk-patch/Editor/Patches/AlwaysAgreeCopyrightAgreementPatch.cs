@@ -7,6 +7,7 @@ using UnityEngine.UIElements;
 using VRC.SDKBase;
 using VRC.SDKBase.Editor.Api;
 using YesPatchFrameworkForVRChatSdk.PatchApi;
+using YesPatchFrameworkForVRChatSdk.PatchApi.Logging;
 
 namespace YetAnotherPatchForVRChatSdk.Patches;
 
@@ -60,6 +61,8 @@ internal sealed class AlwaysAgreeCopyrightAgreementPatch : YesPatchBase
     private const string AgreementCode = "content.copyright.owned";
     private const int AgreementVersion = 1;
 
+    private static readonly YesLogger Logger = new(nameof(AlwaysAgreeCopyrightAgreementPatch));
+
     private static MethodInfo? _agreeMethod;
 
     public override void Patch()
@@ -85,8 +88,8 @@ internal sealed class AlwaysAgreeCopyrightAgreementPatch : YesPatchBase
     {
         if (_agreeMethod is null)
         {
-            Debug.LogWarning(
-                $"[{nameof(AlwaysAgreeCopyrightAgreementPatch)}] Agree method is null, cannot auto-agree copyright agreement. Executing original method.");
+            Logger.LogWarning(
+                "Agree method is null, cannot auto-agree copyright agreement. Executing original method.");
             return true;
         }
 
@@ -98,8 +101,7 @@ internal sealed class AlwaysAgreeCopyrightAgreementPatch : YesPatchBase
         {
             if (_agreeMethod is null)
             {
-                Debug.LogWarning(
-                    $"[{nameof(AlwaysAgreeCopyrightAgreementPatch)}] Agree method is null, cannot auto-agree copyright agreement.");
+                Logger.LogWarning("Agree method is null, cannot auto-agree copyright agreement.");
                 return false;
             }
 
@@ -112,8 +114,8 @@ internal sealed class AlwaysAgreeCopyrightAgreementPatch : YesPatchBase
                 var agreeTask = _agreeMethod.Invoke(null, new object[] { contentId }) as Task<bool>;
                 if (agreeTask is null)
                 {
-                    Debug.LogError(
-                        $"[{nameof(AlwaysAgreeCopyrightAgreementPatch)}] Failed to invoke Agree method for copyright agreement. (Return is {agreeTask?.GetType().ToString() ?? "null"} not Task<bool>)");
+                    Logger.LogError(
+                        $"Failed to invoke Agree method for copyright agreement. (Return is {agreeTask?.GetType().ToString() ?? "null"} not Task<bool>)");
                     return false;
                 }
 
@@ -122,9 +124,7 @@ internal sealed class AlwaysAgreeCopyrightAgreementPatch : YesPatchBase
             }
             catch (Exception ex)
             {
-                Debug.LogException(ex);
-                Debug.LogError(
-                    $"[{nameof(AlwaysAgreeCopyrightAgreementPatch)}] Failed to auto-agree copyright agreement.");
+                Logger.LogError(ex, "Failed to auto-agree copyright agreement.");
             }
 
             return false;
@@ -146,9 +146,7 @@ internal sealed class AlwaysAgreeCopyrightAgreementPatch : YesPatchBase
         }
         catch (Exception ex)
         {
-            Debug.LogError(
-                $"[{nameof(AlwaysAgreeCopyrightAgreementPatch)}] Failed to check is copyright agreement agreed");
-            Debug.LogException(ex);
+            Logger.LogError(ex, "Failed to check is copyright agreement agreed");
         }
 
         return ShouldAgreeResult.Error;
