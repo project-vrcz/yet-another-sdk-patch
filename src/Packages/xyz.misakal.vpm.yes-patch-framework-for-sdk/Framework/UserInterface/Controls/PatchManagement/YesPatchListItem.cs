@@ -48,9 +48,9 @@ internal sealed class YesPatchListItem : VisualElement
         patchToggle.RegisterValueChangedCallback(enabled =>
         {
             if (enabled.newValue)
-                _yesPatchManagerStateManager.EnablePatch(_yesPatch.Id);
+                _yesPatchManagerStateManager.EnableAndPatch(_yesPatch.Id);
             else
-                _yesPatchManagerStateManager.DisablePatch(_yesPatch.Id);
+                _yesPatchManagerStateManager.DisableAndUnPatch(_yesPatch.Id);
         });
 
         RegisterCallback<AttachToPanelEvent>(_ =>

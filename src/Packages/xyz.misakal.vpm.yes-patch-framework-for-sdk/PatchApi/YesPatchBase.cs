@@ -11,7 +11,7 @@ public abstract class YesPatchBase
     public virtual string Category { get; } = "Uncategorized";
     public virtual string Description { get; } = "No description provided.";
 
-    public virtual bool IsDefaultEnabled { get; }
+    public virtual bool IsDefaultEnabled { get; } = true;
 
     public abstract void Patch();
     public abstract void UnPatch();

@@ -26,7 +26,25 @@ internal sealed class YesPatchManagerStateManager
         return settings.IsPatchEnabled(patchId, patch.IsDefaultEnabled);
     }
 
-    public void EnablePatch(string patchId)
+    public void EnablePatchOnly(string patchId)
+    {
+        var settings = YesPatchManagerSettings.GetOrCreateSettings();
+        settings.SetPatchEnabled(patchId, true);
+        OnPatchEnabled?.Invoke(this, patchId);
+
+        OnPatchStatusChanged?.Invoke(this, patchId);
+    }
+
+    public void DisablePatchOnly(string patchId)
+    {
+        var settings = YesPatchManagerSettings.GetOrCreateSettings();
+        settings.SetPatchEnabled(patchId, false);
+        OnPatchDisabled?.Invoke(this, patchId);
+
+        OnPatchStatusChanged?.Invoke(this, patchId);
+    }
+
+    public void EnableAndPatch(string patchId)
     {
         var patch = _patchManager.Patches.FirstOrDefault(p => p.Id == patchId);
         if (patch == null || (patch.Status != YesPatchStatus.UnPatched && patch.Status != YesPatchStatus.Instantiated))
@@ -53,7 +71,7 @@ internal sealed class YesPatchManagerStateManager
         OnPatchStatusChanged?.Invoke(this, patchId);
     }
 
-    public void DisablePatch(string patchId)
+    public void DisableAndUnPatch(string patchId)
     {
         var patch = _patchManager.Patches.FirstOrDefault(p => p.Id == patchId);
         if (patch is not { Status: YesPatchStatus.Patched })

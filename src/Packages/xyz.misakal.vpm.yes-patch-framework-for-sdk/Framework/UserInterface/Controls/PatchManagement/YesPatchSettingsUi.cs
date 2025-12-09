@@ -18,8 +18,9 @@ internal sealed class YesPatchSettingsUi : VisualElement
 
     private readonly Toggle _patchEnabledToggle;
 
+    private readonly Toggle _patchErrorEnableToggle;
     private readonly TextField _patchErrorMessageTextField;
-    private readonly VisualElement _patchErrorTip;
+    private readonly VisualElement _patchErrorAction;
 
     public YesPatchSettingsUi(YesPatch patch)
     {
@@ -43,17 +44,26 @@ internal sealed class YesPatchSettingsUi : VisualElement
         _patchDescriptionLabel.text = _patch.Description;
         _patchDescriptionLabel.tooltip = _patch.Description;
 
+        _patchErrorEnableToggle = this.Q<Toggle>("patch-settings-error-enabled-toggle");
         _patchErrorMessageTextField = this.Q<TextField>("patch-error-message");
-        _patchErrorTip = this.Q<VisualElement>("patch-error-tip");
+        _patchErrorAction = this.Q<VisualElement>("patch-error-action");
 
         UpdateUiStatus();
 
         _patchEnabledToggle.RegisterValueChangedCallback(enabled =>
         {
             if (enabled.newValue)
-                _yesPatchManagerStateManager.EnablePatch(_patch.Id);
+                _yesPatchManagerStateManager.EnableAndPatch(_patch.Id);
             else
-                _yesPatchManagerStateManager.DisablePatch(_patch.Id);
+                _yesPatchManagerStateManager.DisableAndUnPatch(_patch.Id);
+        });
+
+        _patchErrorEnableToggle.RegisterValueChangedCallback(enabled =>
+        {
+            if (enabled.newValue)
+                _yesPatchManagerStateManager.EnablePatchOnly(_patch.Id);
+            else
+                _yesPatchManagerStateManager.DisablePatchOnly(_patch.Id);
         });
 
         RegisterCallback<AttachToPanelEvent>(_ =>
@@ -92,8 +102,9 @@ internal sealed class YesPatchSettingsUi : VisualElement
     private void UpdateUiStatus()
     {
         var isErrored = IsPatchErrored();
+        var isPatchEnabled = _yesPatchManagerStateManager.IsPatchEnabled(_patch.Id);
 
-        _patchErrorTip.style.display = isErrored ? DisplayStyle.Flex : DisplayStyle.None;
+        _patchErrorAction.style.display = isErrored ? DisplayStyle.Flex : DisplayStyle.None;
 
         _patchErrorMessageTextField.style.display = isErrored ? DisplayStyle.Flex : DisplayStyle.None;
         _patchErrorMessageTextField.value = _patch.Status switch
@@ -106,9 +117,11 @@ internal sealed class YesPatchSettingsUi : VisualElement
                 "You should not see this message. Please report a bug. It means patch status is ok but error message is shown."
         };
 
+        _patchErrorEnableToggle.SetValueWithoutNotify(isPatchEnabled);
+
         _patchEnabledToggle.style.display = !isErrored ? DisplayStyle.Flex : DisplayStyle.None;
         _patchEnabledToggle.SetEnabled(!isErrored);
-        _patchEnabledToggle.SetValueWithoutNotify(_yesPatchManagerStateManager.IsPatchEnabled(_patch.Id));
+        _patchEnabledToggle.SetValueWithoutNotify(isPatchEnabled);
     }
 
     private bool IsPatchErrored()

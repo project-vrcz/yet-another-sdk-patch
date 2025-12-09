@@ -20,6 +20,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Allow user check why patch or unpatch failed.
   - Allow user modify patch settings (if patch provided).
 
+### Changes from the [0.1.0-beta.1]
+
+#### Added
+
+- Allow user disable patch when patch error from gui. [`#7`](https://github.com/project-vrcz/yet-another-sdk-patch/pull/7)
+
+#### Changed
+
+- \[BREAKING CHANGE\] All Patches are enabled by default. [`#7`](https://github.com/project-vrcz/yet-another-sdk-patch/pull/7)
+- \[BREAKING CHANGE\] Patch failed won't disable patch now. [`#7`](https://github.com/project-vrcz/yet-another-sdk-patch/pull/7)
+
 ## [0.1.0-beta.1] - 2025-12-06
 
 ### Added
