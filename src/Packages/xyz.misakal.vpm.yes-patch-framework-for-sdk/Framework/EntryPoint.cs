@@ -12,6 +12,8 @@ namespace YesPatchFrameworkForVRChatSdk
         {
             YesLogger.SetLogger(YesFrameworkLogger.Instance);
             YesPatchManager.Instance.ApplyPatches();
+
+            YesFrameworkLogger.SetLogLevelMenuChecks();
         }
     }
 }

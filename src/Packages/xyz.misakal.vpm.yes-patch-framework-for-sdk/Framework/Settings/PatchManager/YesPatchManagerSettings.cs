@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using YesPatchFrameworkForVRChatSdk.PatchApi.Logging;
 
 // DO NOT USE file scoped namespace, It will brake ScriptableObject creation
 namespace YesPatchFrameworkForVRChatSdk.Settings.PatchManager
@@ -12,6 +13,8 @@ namespace YesPatchFrameworkForVRChatSdk.Settings.PatchManager
         public const string AssetPath = "Assets/" + FolderName + "/" + "YesPatchManagerSettings.asset";
 
         [SerializeField] private List<YesPatchManagerPatchSettings> patchSettings = new();
+
+        [SerializeField] public YesLogLevel unityConsoleMinLogLevel = YesLogLevel.Info;
 
         internal static YesPatchManagerSettings GetOrCreateSettings()
         {
@@ -60,6 +63,12 @@ namespace YesPatchFrameworkForVRChatSdk.Settings.PatchManager
                 patchSettings[settingIndex] = setting;
             }
 
+            EditorUtility.SetDirty(this);
+            AssetDatabase.SaveAssets();
+        }
+
+        public void Save()
+        {
             EditorUtility.SetDirty(this);
             AssetDatabase.SaveAssets();
         }
