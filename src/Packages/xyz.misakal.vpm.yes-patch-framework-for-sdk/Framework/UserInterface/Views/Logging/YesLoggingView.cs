@@ -156,7 +156,7 @@ internal sealed class YesLoggingView : VisualElement
     {
         _logEntries.Add(entity);
 
-        UpdateFilteredLogEntries();
+        MainThreadDispatcher.Dispatch(UpdateFilteredLogEntries);
     }
 
     private static string GetLogEntityDetails(YesLogEntity logEntity)
