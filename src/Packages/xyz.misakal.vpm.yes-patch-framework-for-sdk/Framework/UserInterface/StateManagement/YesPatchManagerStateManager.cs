@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using UnityEngine;
+using YesPatchFrameworkForVRChatSdk.PatchApi.Logging;
 using YesPatchFrameworkForVRChatSdk.PatchManagement;
 using YesPatchFrameworkForVRChatSdk.Settings.PatchManager;
 
@@ -11,6 +12,7 @@ internal sealed class YesPatchManagerStateManager
     public static YesPatchManagerStateManager Instance { get; } = new();
 
     private readonly YesPatchManager _patchManager = YesPatchManager.Instance;
+    private readonly YesLogger _logger = new(nameof(YesPatchManagerStateManager));
 
     public event EventHandler<string>? OnPatchEnabled;
     public event EventHandler<string>? OnPatchDisabled;
@@ -56,8 +58,7 @@ internal sealed class YesPatchManagerStateManager
         }
         catch (Exception exception)
         {
-            Debug.LogException(exception);
-            Debug.LogError("Failed to enable patch: " + patchId);
+            _logger.LogError(exception, "Failed to patch: " + patchId);
         }
 
         var patchEnabled = patch.Status == YesPatchStatus.Patched;
@@ -83,8 +84,7 @@ internal sealed class YesPatchManagerStateManager
         }
         catch (Exception exception)
         {
-            Debug.LogException(exception);
-            Debug.LogError("Failed to unpatch: " + patchId);
+            _logger.LogError(exception, "Failed to unpatch: " + patchId);
         }
 
         _patchManager.SetPatchEnabled(patchId, false);

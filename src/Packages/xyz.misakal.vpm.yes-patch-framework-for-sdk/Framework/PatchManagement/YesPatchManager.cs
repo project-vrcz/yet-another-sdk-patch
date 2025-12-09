@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Text;
 using UnityEngine;
 using YesPatchFrameworkForVRChatSdk.PatchApi;
+using YesPatchFrameworkForVRChatSdk.PatchApi.Logging;
 using YesPatchFrameworkForVRChatSdk.Settings.PatchManager;
 
 namespace YesPatchFrameworkForVRChatSdk.PatchManagement;
@@ -12,6 +13,8 @@ namespace YesPatchFrameworkForVRChatSdk.PatchManagement;
 public sealed class YesPatchManager
 {
     public static readonly YesPatchManager Instance = new();
+
+    private readonly YesLogger _logger = new(nameof(YesPatchManager));
 
     public IReadOnlyList<YesPatch> Patches => _patches.AsReadOnly();
     private readonly List<YesPatch> _patches = new();
@@ -37,7 +40,7 @@ public sealed class YesPatchManager
 
         var completedMessageBuilder = new StringBuilder();
         completedMessageBuilder.AppendLine(
-            $"[YesPatchFramework] Patch process completed. Total: {totalPatches} Patched: {appliedPatches.Length} Errors: {failedPatches.Length}");
+            $"Patch process completed. Total: {totalPatches} Patched: {appliedPatches.Length} Errors: {failedPatches.Length}");
 
         if (failedPatches.Length > 0)
         {
@@ -48,7 +51,7 @@ public sealed class YesPatchManager
             }
         }
 
-        Debug.Log(completedMessageBuilder.ToString());
+        _logger.LogInfo(completedMessageBuilder.ToString());
     }
 
     public void SetPatchEnabled(string patchId, bool enabled)
@@ -67,16 +70,14 @@ public sealed class YesPatchManager
             if (!settings.IsPatchEnabled(patch.Id, patch.IsDefaultEnabled))
                 continue;
 
-            Debug.Log($"[YesPatchFramework] Applying patch: [{patch.Id}] {patch.DisplayName}");
+            _logger.LogDebug($"Applying patch: [{patch.Id}] {patch.DisplayName}");
             try
             {
                 patch.Patch();
             }
             catch (Exception ex)
             {
-                Debug.LogError(
-                    $"[YesPatchFramework] Failed to apply patch: [{patch.Id}] {patch.DisplayName}");
-                Debug.LogException(ex);
+                _logger.LogError(ex, $"Failed to apply patch: [{patch.Id}] {patch.DisplayName}");
             }
         }
 
@@ -99,8 +100,8 @@ public sealed class YesPatchManager
             }
             catch (Exception ex)
             {
-                Debug.LogError($"[YesPatchFramework] Failed to create patch instance for type: {patchType.FullName}");
-                Debug.LogException(ex);
+                _logger.LogError(ex,
+                    $"Failed to create patch instance for type: {patchType.FullName}");
             }
         }
 
