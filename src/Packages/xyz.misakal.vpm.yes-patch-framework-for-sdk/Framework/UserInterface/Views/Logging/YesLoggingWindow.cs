@@ -6,8 +6,9 @@ namespace YesPatchFrameworkForVRChatSdk.UserInterface.Views.Logging
 {
     internal sealed class YesLoggingWindow : EditorWindow
     {
-        [MenuItem("Window/Yes! Patch Framework/Logging")]
-        public static void ShowPatchManagementWindow()
+        [MenuItem(FrameworkMenuItem.FrameworkWindows + "Logging")]
+        [MenuItem(FrameworkMenuItem.ToolsMenuRoot + "Open Logging Window")]
+        public static void ShowLoggingWindow()
         {
             var window = GetWindow<YesLoggingWindow>();
             window.titleContent = new GUIContent("Yes! Logging");

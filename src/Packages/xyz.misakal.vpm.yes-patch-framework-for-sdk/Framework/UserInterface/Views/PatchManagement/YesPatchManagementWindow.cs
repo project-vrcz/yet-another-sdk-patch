@@ -6,7 +6,8 @@ namespace YesPatchFrameworkForVRChatSdk.UserInterface.Views.PatchManagement
 {
     internal class YesPatchManagementWindow : EditorWindow
     {
-        [MenuItem("Window/Yes! Patch Framework/Patch Management")]
+        [MenuItem(FrameworkMenuItem.FrameworkWindows + "Patch Management")]
+        [MenuItem(FrameworkMenuItem.ToolsMenuRoot + "Open Patch Management Window")]
         public static void ShowPatchManagementWindow()
         {
             var window = GetWindow<YesPatchManagementWindow>();
