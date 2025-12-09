@@ -1,0 +1,7 @@
+﻿.selected-log-message-container {
+    display: flex;
+}
+
+#selected-log-message-field {
+    flex: 1;
+}

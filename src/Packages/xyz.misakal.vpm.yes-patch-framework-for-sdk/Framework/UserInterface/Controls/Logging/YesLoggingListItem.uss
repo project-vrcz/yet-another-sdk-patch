@@ -1,0 +1,78 @@
+﻿.log-entity-item {
+    display: flex;
+    flex-direction: row;
+
+    padding: 4px;
+
+    border-color: dimgray;
+    border-bottom-width: 1px;
+    
+    overflow: hidden;
+}
+
+.log-metadata-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    flex: none;
+}
+
+#log-source {
+    -unity-font-style: bold;
+
+    color: #fff;
+    background-color: darkslateblue;
+
+    padding: 2px 6px;
+
+    border-radius: 8px;
+}
+
+#log-level {
+    -unity-font-style: bold;
+
+    margin-top: 4px;
+    padding: 2px 6px;
+
+    border-radius: 8px;
+}
+
+#log-level.trace {
+    background-color: gray;
+    color: white;
+}
+
+#log-level.debug {
+    background-color: darkcyan;
+    color: white;
+}
+
+#log-level.info {
+    background-color: green;
+    color: white;
+}
+
+#log-level.warning {
+    background-color: yellow;
+    color: black;
+}
+
+#log-level.error {
+    background-color: red;
+    color: white;
+}
+
+#log-level.critical {
+    background-color: darkred;
+    color: white;
+}
+
+#log-message {
+    font-size: 14px;
+    
+    flex: 1;
+    white-space: normal;
+
+    margin-left: 4px;
+}

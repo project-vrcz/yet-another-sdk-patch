@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<engine:UXML
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:engine="UnityEngine.UIElements"
+    xmlns:editor="UnityEditor.UIElements">
+
+    <engine:Style src="YesLoggingListItem.uss" />
+
+    <engine:VisualElement class="log-entity-item">
+        <engine:VisualElement class="log-metadata-container">
+            <engine:Label name="log-source" text="Source" />
+            <engine:Label name="log-level" text="Level" />
+        </engine:VisualElement>
+        <engine:Label name="log-message" text="Message" />
+    </engine:VisualElement>
+</engine:UXML>
