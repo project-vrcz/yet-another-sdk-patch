@@ -1,6 +1,8 @@
 ﻿using System;
+using System.IO;
 using UnityEditor;
 using UnityEngine.UIElements;
+using YesPatchFrameworkForVRChatSdk.Extensions;
 using YesPatchFrameworkForVRChatSdk.PatchManagement;
 using YesPatchFrameworkForVRChatSdk.UserInterface.StateManagement;
 
@@ -22,13 +24,16 @@ internal sealed class YesPatchSettingsUi : VisualElement
     private readonly TextField _patchErrorMessageTextField;
     private readonly VisualElement _patchErrorAction;
 
+    private const string VisualTreeAssetGuid = "17bfab97629345ba8484146eeecc5487";
+
     public YesPatchSettingsUi(YesPatch patch)
     {
         _patch = patch;
 
-        var tree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(
-            "Packages/xyz.misakal.vpm.yes-patch-framework-for-sdk/Framework/UserInterface/Controls/PatchManagement/" +
-            nameof(YesPatchSettingsUi) + ".uxml");
+        var tree = AssetDatabaseExtenstion.LoadAssetFromGuid<VisualTreeAsset>(VisualTreeAssetGuid);
+        if (tree == null)
+            throw new FileNotFoundException(
+                $"Failed to load YesPatchSettingsUi UXML asset: YesPatchSettingsUi.uxml ({VisualTreeAssetGuid})");
         tree.CloneTree(this);
 
         _patchDisplayNameLabel = this.Q<Label>("patch-settings-header-display-name");

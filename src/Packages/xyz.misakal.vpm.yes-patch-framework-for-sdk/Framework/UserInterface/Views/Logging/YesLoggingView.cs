@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
+using YesPatchFrameworkForVRChatSdk.Extensions;
 using YesPatchFrameworkForVRChatSdk.Logging;
 using YesPatchFrameworkForVRChatSdk.PatchApi.Logging;
 using YesPatchFrameworkForVRChatSdk.UserInterface.Controls.Logging;
@@ -32,11 +34,14 @@ internal sealed class YesLoggingView : VisualElement
 
     private YesLogEntity? _selectedLogEntity;
 
+    private const string VisualTreeAssetGuid = "ad3f8c8e614d488aa906eec99e746a04";
+
     public YesLoggingView()
     {
-        var tree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(
-            "Packages/xyz.misakal.vpm.yes-patch-framework-for-sdk/Framework/UserInterface/Views/Logging/" +
-            nameof(YesLoggingView) + ".uxml");
+        var tree = AssetDatabaseExtenstion.LoadAssetFromGuid<VisualTreeAsset>(VisualTreeAssetGuid);
+        if (tree == null)
+            throw new FileNotFoundException(
+                $"Failed to load YesLoggingView UXML asset: YesLoggingView.uxml ({VisualTreeAssetGuid})");
         tree.CloneTree(this);
 
         _logListView = this.Q<ListView>("log-list-view");

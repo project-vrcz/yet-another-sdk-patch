@@ -1,6 +1,8 @@
-﻿using System.Linq;
+﻿using System.IO;
+using System.Linq;
 using UnityEditor;
 using UnityEngine.UIElements;
+using YesPatchFrameworkForVRChatSdk.Extensions;
 using YesPatchFrameworkForVRChatSdk.PatchManagement;
 using YesPatchFrameworkForVRChatSdk.UserInterface.Controls.PatchManagement;
 using YesPatchFrameworkForVRChatSdk.UserInterface.StateManagement;
@@ -17,11 +19,14 @@ internal sealed class YesPatchManagementView : VisualElement
 
     private VisualElement? _patchSettingsUi;
 
+    private const string VisualTreeAssetGuid = "678da0557d259cb469a82dc821e0c3cb";
+
     public YesPatchManagementView()
     {
-        var tree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(
-            "Packages/xyz.misakal.vpm.yes-patch-framework-for-sdk/Framework/UserInterface/Views/PatchManagement/" +
-            nameof(YesPatchManagementView) + ".uxml");
+        var tree = AssetDatabaseExtenstion.LoadAssetFromGuid<VisualTreeAsset>(VisualTreeAssetGuid);
+        if (tree == null)
+            throw new FileNotFoundException(
+                $"Failed to load YesPatchManagementView UXML asset: YesPatchManagementView.uxml ({VisualTreeAssetGuid})");
         tree.CloneTree(this);
 
         _contentContainer = this.Q<VisualElement>("patch-management-content-container");

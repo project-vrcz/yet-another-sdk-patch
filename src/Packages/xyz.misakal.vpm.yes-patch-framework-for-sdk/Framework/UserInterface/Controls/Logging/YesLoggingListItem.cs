@@ -1,5 +1,6 @@
-﻿using UnityEditor;
+﻿using System.IO;
 using UnityEngine.UIElements;
+using YesPatchFrameworkForVRChatSdk.Extensions;
 using YesPatchFrameworkForVRChatSdk.Logging;
 
 namespace YesPatchFrameworkForVRChatSdk.UserInterface.Controls.Logging;
@@ -12,13 +13,16 @@ internal sealed class YesLoggingListItem : VisualElement
     private readonly Label _levelLabel;
     private readonly Label _messageLabel;
 
+    private const string VisualTreeAssetGuid = "e6374f07026a44d49a7856742d04698e";
+
     public YesLoggingListItem(YesLogEntity logEntity)
     {
         _logEntity = logEntity;
 
-        var tree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(
-            "Packages/xyz.misakal.vpm.yes-patch-framework-for-sdk/Framework/UserInterface/Controls/Logging/" +
-            nameof(YesLoggingListItem) + ".uxml");
+        var tree = AssetDatabaseExtenstion.LoadAssetFromGuid<VisualTreeAsset>(VisualTreeAssetGuid);
+        if (tree == null)
+            throw new FileNotFoundException(
+                $"Failed to load YesLoggingListItem UXML asset: YesLoggingListItem.uxml ({VisualTreeAssetGuid})");
         tree.CloneTree(this);
 
         _sourceLabel = this.Q<Label>("log-source");

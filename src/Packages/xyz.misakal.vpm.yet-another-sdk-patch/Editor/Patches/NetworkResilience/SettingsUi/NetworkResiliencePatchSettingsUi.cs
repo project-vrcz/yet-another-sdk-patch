@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using System.IO;
+using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 
@@ -12,11 +13,15 @@ internal sealed class NetworkResiliencePatchSettingsUi : VisualElement
     private readonly VisualElement _customProxyUriValidationMessage;
     private readonly TextField _customProxyUriField;
 
+    private const string VisualTreeAssetGuid = "cdd9f4145c19b564b967e698981ab473";
+
     public NetworkResiliencePatchSettingsUi()
     {
-        var tree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(
-            "Packages/xyz.misakal.vpm.yet-another-sdk-patch/Editor/Patches/NetworkResilience/SettingsUi/" +
-            nameof(NetworkResiliencePatchSettingsUi) + ".uxml");
+        var path = AssetDatabase.GUIDToAssetPath(VisualTreeAssetGuid);
+        if (string.IsNullOrEmpty(path))
+            throw new FileNotFoundException("Could not find VisualTreeAsset for NetworkResiliencePatchSettingsUi.");
+
+        var tree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(path);
         tree.CloneTree(this);
 
         _customProxyUriField = this.Q<TextField>("proxy-uri");
