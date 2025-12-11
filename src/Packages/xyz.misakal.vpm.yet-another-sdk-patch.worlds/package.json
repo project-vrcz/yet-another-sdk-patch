@@ -19,6 +19,6 @@
   ],
   "vpmDependencies": {
     "com.vrchat.worlds": "^3.7.0",
-    "xyz.misakal.vpm.yes-patch-framework-for-sdk": "^0.1.0"
+    "xyz.misakal.vpm.yes-patch-framework-for-sdk": "^0.2.0-beta.1"
   }
 }
