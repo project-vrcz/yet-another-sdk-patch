@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Use SDK provided 0Harmony.dll instead of HarmonyX. [`#19`](https://github.com/project-vrcz/yet-another-sdk-patch/pull/19)
 
+## [0.2.0-beta.1] - 2025-12-11
+
+### Changes
+
+- Use SDK provided 0Harmony.dll instead of HarmonyX. [`#19`](https://github.com/project-vrcz/yet-another-sdk-patch/pull/19)
+
 ## [0.1.0] - 2025-12-09
 
 ### Added
@@ -70,7 +76,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Always Agree Copyright Agreement Patch
   - Automatically agrees to the copyright agreement when uploading content.
 
-[unreleased]: https://github.com/project-vrcz/yet-another-sdk-patch/compare/sdk-patch-v0.1.0...HEAD
+[unreleased]: https://github.com/project-vrcz/yet-another-sdk-patch/compare/sdk-patch-v0.2.0-beta.1...HEAD
+[0.2.0-beta.1]: https://github.com/project-vrcz/yet-another-sdk-patch/compare/sdk-patch-v0.1.0...sdk-patch-v0.2.0-beta.1
 [0.1.0]: https://github.com/project-vrcz/yet-another-sdk-patch/compare/sdk-patch-v0.1.0-beta.2...sdk-patch-v0.1.0
 [0.1.0-beta.2]: https://github.com/project-vrcz/yet-another-sdk-patch/compare/sdk-patch-v0.1.0-beta.1...sdk-patch-v0.1.0-beta.2
 [0.1.0-beta.1]: https://github.com/project-vrcz/yet-another-sdk-patch/releases/tag/sdk-patch-v0.1.0-beta.1
