@@ -8,10 +8,12 @@ using HarmonyLib;
 using UnityEngine;
 using VRC.Core;
 using YesPatchFrameworkForVRChatSdk.PatchApi;
+using YesPatchFrameworkForVRChatSdk.PatchApi.Extensions;
 using YesPatchFrameworkForVRChatSdk.PatchApi.Logging;
 
 namespace YetAnotherPatchForVRChatSdk.Patches;
 
+[HarmonyPatch]
 internal sealed class RemoteConfigCachePatch : YesPatchBase
 {
     public override string Id => "xyz.misakal.vpm.remote-config-cache-patch";

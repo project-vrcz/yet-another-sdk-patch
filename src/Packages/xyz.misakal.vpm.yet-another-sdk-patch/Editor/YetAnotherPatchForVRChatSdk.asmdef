@@ -12,11 +12,11 @@
     "allowUnsafeCode": false,
     "overrideReferences": true,
     "precompiledReferences": [
-        "YPF4VRC.0Harmony.dll",
         "VRCCore-Editor.dll",
         "Polly.Core.dll",
         "Polly.dll",
-        "StandardSocketsHttpHandler.dll"
+        "StandardSocketsHttpHandler.dll",
+        "0Harmony.dll"
     ],
     "autoReferenced": false,
     "defineConstraints": [],

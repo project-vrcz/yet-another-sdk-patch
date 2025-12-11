@@ -8,10 +8,12 @@ using UnityEngine.UIElements;
 using VRC.Udon;
 using VRC.Udon.Common.Interfaces;
 using YesPatchFrameworkForVRChatSdk.PatchApi;
+using YesPatchFrameworkForVRChatSdk.PatchApi.Extensions;
 using UnityObject = UnityEngine.Object;
 
 namespace YetAnotherPatchForVRChatSdk.Worlds.Patches;
 
+[HarmonyPatch]
 internal sealed class UdonProfilerPatch : YesPatchBase
 {
     public override string Id => "xyz.misakal.vpm.yet-another-sdk-patch.worlds.udon-profiler";

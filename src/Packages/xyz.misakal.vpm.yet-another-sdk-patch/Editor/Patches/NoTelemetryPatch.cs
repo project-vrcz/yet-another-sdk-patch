@@ -5,10 +5,12 @@ using HarmonyLib;
 using UnityEngine;
 using VRC.Core;
 using YesPatchFrameworkForVRChatSdk.PatchApi;
+using YesPatchFrameworkForVRChatSdk.PatchApi.Extensions;
 using YesPatchFrameworkForVRChatSdk.PatchApi.Logging;
 
 namespace YetAnotherPatchForVRChatSdk.Patches;
 
+[HarmonyPatch]
 internal sealed class NoTelemetryPatch : YesPatchBase
 {
     public override string Id => "xyz.misakal.vpm.yet-another-sdk-patch.no-telemetry";

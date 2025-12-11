@@ -12,7 +12,7 @@
     "allowUnsafeCode": false,
     "overrideReferences": true,
     "precompiledReferences": [
-        "YPF4VRC.0Harmony.dll"
+        "0Harmony.dll"
     ],
     "autoReferenced": false,
     "defineConstraints": [],

@@ -9,10 +9,12 @@ using UnityEngine.UIElements;
 using VRC.Core;
 using VRC.SDKBase.Editor.Api;
 using YesPatchFrameworkForVRChatSdk.PatchApi;
+using YesPatchFrameworkForVRChatSdk.PatchApi.Extensions;
 using YetAnotherPatchForVRChatSdk.Patches.NetworkResilience.SettingsUi;
 
 namespace YetAnotherPatchForVRChatSdk.Patches.NetworkResilience;
 
+[HarmonyPatch]
 internal sealed class NetworkResiliencePatch : YesPatchBase
 {
     public override string Id => "xyz.misakal.vpm.yet-another-sdk-patch.network-resilience";

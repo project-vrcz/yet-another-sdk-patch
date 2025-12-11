@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changes
+
+- Use SDK provided 0Harmony.dll instead of HarmonyX. [`#19`](https://github.com/project-vrcz/yet-another-sdk-patch/pull/19)
+
 ## [0.1.0] - 2025-12-09
 
 ### Changed

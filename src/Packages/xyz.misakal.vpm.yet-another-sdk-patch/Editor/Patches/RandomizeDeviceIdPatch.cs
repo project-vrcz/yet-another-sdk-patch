@@ -1,10 +1,11 @@
 ﻿using HarmonyLib;
-using UnityEngine;
 using VRC.Core;
 using YesPatchFrameworkForVRChatSdk.PatchApi;
+using YesPatchFrameworkForVRChatSdk.PatchApi.Extensions;
 
 namespace YetAnotherPatchForVRChatSdk.Patches;
 
+[HarmonyPatch]
 internal sealed class RandomizeDeviceIdPatch : YesPatchBase
 {
     public override string Id => "xyz.misakal.vpm.yet-another-sdk-patch.randomize-device-id-patch";

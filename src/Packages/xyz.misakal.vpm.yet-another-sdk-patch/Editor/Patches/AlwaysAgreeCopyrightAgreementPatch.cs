@@ -7,10 +7,12 @@ using UnityEngine.UIElements;
 using VRC.SDKBase;
 using VRC.SDKBase.Editor.Api;
 using YesPatchFrameworkForVRChatSdk.PatchApi;
+using YesPatchFrameworkForVRChatSdk.PatchApi.Extensions;
 using YesPatchFrameworkForVRChatSdk.PatchApi.Logging;
 
 namespace YetAnotherPatchForVRChatSdk.Patches;
 
+[HarmonyPatch]
 internal sealed class AlwaysAgreeCopyrightAgreementPatch : YesPatchBase
 {
     public override string Id => "xyz.misakal.vpm.yet-another-sdk-patch.always-agree-copyright-agreement";

@@ -4,9 +4,11 @@ using HarmonyLib;
 using VRC.SDKBase;
 using VRC.SDKBase.Editor.Api;
 using YesPatchFrameworkForVRChatSdk.PatchApi;
+using YesPatchFrameworkForVRChatSdk.PatchApi.Extensions;
 
 namespace YetAnotherPatchForVRChatSdk.Avatars.Patches;
 
+[HarmonyPatch]
 internal sealed class FixForgetToCropThumbnailPatch : YesPatchBase
 {
     public override string Id => "xyz.misakal.vpm.yet-another-sdk-patch.avatars.fix-forget-to-crop-thumbnail";
