@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<engine:UXML
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:engine="UnityEngine.UIElements"
+    xmlns:editor="UnityEditor.UIElements">
+
+    <engine:Style src="TraceTestView.uss" />
+
+    <engine:VisualElement>
+        <engine:Button name="send-test-request-button" text="Send Trace Request" />
+        <engine:VisualElement class="trace-test-container">
+            <engine:Box class="trace-test-item-container">
+                <engine:Label class="trace-test-item-header" text="(API class, all exclude builder) BestHttp" />
+                <engine:Label class="api-cloud-url-label" text="https://api.vrchat.cloud/cdn-cgi/trace" />
+                <engine:TextField name="best-http-api-cloud-result" readonly="true" multiline="true" />
+                <engine:Label class="website-url-label" text="https://vrchat.com/cdn-cgi/trace" />
+                <engine:TextField name="best-http-website-result" readonly="true" multiline="true" />
+            </engine:Box>
+            <engine:Box class="trace-test-item-container">
+                <engine:Label class="trace-test-item-header" text="(VRCApi class, Builder) HttpClient" />
+                <engine:Label class="api-cloud-url-label" text="https://api.vrchat.cloud/cdn-cgi/trace" />
+                <engine:TextField name="httpclient-api-cloud-result" readonly="true" multiline="true" />
+                <engine:Label class="website-url-label" text="https://vrchat.com/cdn-cgi/trace" />
+                <engine:TextField name="httpclient-website-result" readonly="true" multiline="true" />
+            </engine:Box>
+        </engine:VisualElement>
+    </engine:VisualElement>
+</engine:UXML>
