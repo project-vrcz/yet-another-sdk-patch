@@ -1,7 +1,7 @@
 ﻿.unity-group-box__label {
     font-size: 16px;
     -unity-font-style: bold;
-    
+
     padding-bottom: 2px;
     border-bottom-color: dimgray;
     border-bottom-width: 2px;

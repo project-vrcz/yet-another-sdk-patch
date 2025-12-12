@@ -3,14 +3,20 @@
 <engine:UXML
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:engine="UnityEngine.UIElements"
-    xmlns:editor="UnityEditor.UIElements">
+    xmlns:editor="UnityEditor.UIElements"
+    xmlns:trace-test="YetAnotherPatchForVRChatSdk.Patches.NetworkResilience.SettingsUi.TraceTest">
 
     <Style src="NetworkResiliencePatchSettingsUi.uss" />
 
-    <engine:GroupBox text="Http Proxy">
-        <engine:EnumField binding-path="proxyMode" label="Proxy Mode" />
-        <engine:HelpBox name="custom-proxy-uri-valid-error" class="larget-help-box" message-type="Error"
-                        text="Not a valid custom proxy uri, will fallback to system proxy." />
-        <engine:TextField name="proxy-uri" label="Custom (Http) Proxy Uri" binding-path="customProxyAddress" />
-    </engine:GroupBox>
+    <engine:ScrollView>
+        <engine:GroupBox text="Http Proxy">
+            <engine:EnumField binding-path="proxyMode" label="Proxy Mode" />
+            <engine:HelpBox name="custom-proxy-uri-valid-error" class="larget-help-box" message-type="Error"
+                            text="Not a valid custom proxy uri, will fallback to system proxy." />
+            <engine:TextField name="proxy-uri" label="Custom (Http) Proxy Uri" binding-path="customProxyAddress" />
+        </engine:GroupBox>
+        <engine:GroupBox text="Trace Test">
+            <trace-test:TraceTestView />
+        </engine:GroupBox>
+    </engine:ScrollView>
 </engine:UXML>

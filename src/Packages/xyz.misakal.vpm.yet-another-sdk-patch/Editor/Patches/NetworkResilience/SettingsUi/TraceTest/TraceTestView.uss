@@ -1,0 +1,24 @@
+﻿.trace-test-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.trace-test-container TextField {
+    white-space: normal;
+}
+
+.trace-test-item-container {
+    flex-grow: 1;
+    margin: 4px;
+}
+
+.trace-test-item-header {
+    font-size: 12px;
+    -unity-font-style: bold;
+
+    margin-bottom: 4px;
+
+    padding-bottom: 2px;
+    border-bottom-color: dimgray;
+    border-bottom-width: 2px;
+}
