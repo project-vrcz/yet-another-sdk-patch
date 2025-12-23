@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Allow toggle wrap for log message text field. [`#26`](https://github.com/project-vrcz/yet-another-sdk-patch/pull/26)
+
 ## [0.2.0] - 2025-12-18
 
 ### Changes
