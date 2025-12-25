@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.1] - 2025-12-25
+
 ### Changed
 
 - Rename to `Yet Another SDK Patch - Common Pack`. [`#28`](https://github.com/project-vrcz/yet-another-sdk-patch/pull/29)
@@ -100,7 +102,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Always Agree Copyright Agreement Patch
   - Automatically agrees to the copyright agreement when uploading content.
 
-[unreleased]: https://github.com/project-vrcz/yet-another-sdk-patch/compare/sdk-patch-v0.2.0...HEAD
+[unreleased]: https://github.com/project-vrcz/yet-another-sdk-patch/compare/sdk-patch-v0.2.1...HEAD
+[0.2.1]: https://github.com/project-vrcz/yet-another-sdk-patch/compare/sdk-patch-v0.2.0...sdk-patch-v0.2.1
 [0.2.0]: https://github.com/project-vrcz/yet-another-sdk-patch/compare/sdk-patch-v0.2.0-beta.2...sdk-patch-v0.2.0
 [0.2.0-beta.2]: https://github.com/project-vrcz/yet-another-sdk-patch/compare/sdk-patch-v0.2.0-beta.1...sdk-patch-v0.2.0-beta.2
 [0.2.0-beta.1]: https://github.com/project-vrcz/yet-another-sdk-patch/compare/sdk-patch-v0.1.0...sdk-patch-v0.2.0-beta.1
