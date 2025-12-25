@@ -1,6 +1,6 @@
 {
   "name": "xyz.misakal.vpm.yet-another-sdk-patch.avatars",
-  "displayName": "Yet Another Patch for VRChat SDK - Avatars",
+  "displayName": "Yet Another SDK Patch - Avatars Pack",
   "version": "0.2.0",
   "hideInEditor": true,
   "description": "Patch to fix avatar sdk won\u0027t crop thumbnail when creating new avatar after upgrade to 3.9.0 or newer.",
