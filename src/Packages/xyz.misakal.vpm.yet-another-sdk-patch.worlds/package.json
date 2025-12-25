@@ -1,6 +1,6 @@
 {
   "name": "xyz.misakal.vpm.yet-another-sdk-patch.worlds",
-  "displayName": "Yet Another Patch for VRChat SDK - Worlds",
+  "displayName": "Yet Another SDK Patch - Worlds Pack",
   "version": "0.2.0",
   "hideInEditor": true,
   "description": "Add ability to profiling Udon",

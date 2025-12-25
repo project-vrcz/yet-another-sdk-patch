@@ -1,6 +1,6 @@
 {
   "name": "xyz.misakal.vpm.yet-another-sdk-patch",
-  "displayName": "Yet Another Patch for VRChat SDK - Base",
+  "displayName": "Yet Another SDK Patch - Common Pack",
   "version": "0.2.0",
   "hideInEditor": true,
   "description": "Provide Network Resilience ability, hotfix and add some quality of life features for VRChat SDK.",
