@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `AlwaysAgreeCopyrightAgreementPatch` will also patch `VRCApi.ContentUploadConsent` for tools didn't check is already agreed before send agree request.
+
 ## [0.2.1] - 2025-12-25
 
 ### Changed

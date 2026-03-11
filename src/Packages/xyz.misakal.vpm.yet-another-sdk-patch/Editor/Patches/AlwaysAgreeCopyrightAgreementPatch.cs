@@ -1,7 +1,9 @@
 ﻿using System;
-using System.Reflection;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using HarmonyLib;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 using VRC.SDKBase;
@@ -58,79 +60,116 @@ internal sealed class AlwaysAgreeCopyrightAgreementPatch : YesPatchBase
     private readonly Harmony _harmony = new("xyz.misakal.vpm.yet-another-sdk-patch.always-agree-copyright-agreement");
 
     private const string HasAgreementMethodName = "HasAgreement";
-    private const string AgreeMethodName = "Agree";
+    private const string ContentListKey = "VRCSdkControlPanel.CopyrightAgreement.ContentList";
 
     private const string AgreementCode = "content.copyright.owned";
     private const int AgreementVersion = 1;
 
     private static readonly YesLogger Logger = new(nameof(AlwaysAgreeCopyrightAgreementPatch));
 
-    private static MethodInfo? _agreeMethod;
-
     public override void Patch()
     {
-        var agreeMethod = AccessTools.Method(typeof(VRCCopyrightAgreement), AgreeMethodName, new[] { typeof(string) });
-        if (agreeMethod is null || agreeMethod.ReturnType != typeof(Task<bool>))
-            throw new MissingMethodException(nameof(VRCCopyrightAgreement), AgreeMethodName);
-
-        _agreeMethod = agreeMethod;
-
         _harmony.PatchAll(typeof(AlwaysAgreeCopyrightAgreementPatch));
     }
 
     public override void UnPatch()
     {
         _harmony.UnpatchSelf();
-        _agreeMethod = null;
+    }
+
+    #region Agree Implmeation (Api request & Session storage)
+
+    private static async Task AgreeAsync(string contentId)
+    {
+        var result = await OriginalContentUploadConsent(new VRCAgreement
+        {
+            AgreementCode = AgreementCode,
+            AgreementFulltext = GetCopyrightAgreementText(),
+            ContentId = contentId,
+            Version = AgreementVersion
+        });
+
+        var agreed = result.ContentId == contentId &&
+                     result is { Version: AgreementVersion, AgreementCode: AgreementCode };
+        if (!agreed)
+        {
+            throw new Exception(
+                "Failed to agree copyright agreement due to api response mismatch with request agreement content");
+        }
+
+        SaveContentAgreementToSession(contentId);
+    }
+
+    private static void SaveContentAgreementToSession(string contentId)
+    {
+        var agreedList = GetAgreedContentThisSession();
+        if (agreedList.Contains(contentId)) return;
+
+        agreedList.Add(contentId);
+        SessionState.SetString(ContentListKey, string.Join(";", agreedList));
+    }
+
+    private static List<string> GetAgreedContentThisSession()
+    {
+        var saved = SessionState.GetString(ContentListKey, null);
+        if (string.IsNullOrWhiteSpace(saved))
+        {
+            return new List<string>();
+        }
+
+        return saved.Split(';').ToList();
+    }
+
+    [HarmonyPatch(typeof(VRCApi), nameof(VRCApi.ContentUploadConsent), typeof(VRCAgreement))]
+    [HarmonyReversePatch(HarmonyReversePatchType.Snapshot)]
+    private static Task<VRCAgreement> OriginalContentUploadConsent(VRCAgreement data)
+    {
+        // Should never be called, just a placeholder for reverse patch
+        throw new NotSupportedException("This method is a Harmony reverse patch and should never be called directly.");
+    }
+
+    #endregion
+
+    [HarmonyPatch(typeof(VRCApi), nameof(VRCApi.ContentUploadConsent), typeof(VRCAgreement))]
+    [HarmonyPrefix]
+    private static bool ContentUploadConsentPrefix(VRCAgreement data, ref Task<VRCAgreement> __result)
+    {
+        __result = AgreeAndReturnResultAsync();
+        return false;
+
+        async Task<VRCAgreement> AgreeAndReturnResultAsync()
+        {
+            await AgreeAsync(data.ContentId);
+            return data;
+        }
     }
 
     [HarmonyPatch(typeof(VRCCopyrightAgreement), HasAgreementMethodName, typeof(string))]
     [HarmonyPrefix]
     private static bool HasAgreementPrefix(string contentId, ref Task<bool> __result)
     {
-        if (_agreeMethod is null)
-        {
-            Logger.LogWarning(
-                "Agree method is null, cannot auto-agree copyright agreement. Executing original method.");
-            return true;
-        }
-
-        __result = HasAgreementCore();
+        __result = CheckAndAgreeAsync(contentId);
 
         return false;
+    }
 
-        async Task<bool> HasAgreementCore()
+    private static async Task<bool> CheckAndAgreeAsync(string contentId)
+    {
+        var shouldAgree = await ShouldAgreeAsync(contentId);
+        if (shouldAgree == ShouldAgreeResult.Error) return false;
+        if (shouldAgree == ShouldAgreeResult.AlreadyAgreed) return true;
+
+        try
         {
-            if (_agreeMethod is null)
-            {
-                Logger.LogWarning("Agree method is null, cannot auto-agree copyright agreement.");
-                return false;
-            }
-
-            var shouldAgree = await ShouldAgreeAsync(contentId);
-            if (shouldAgree == ShouldAgreeResult.Error) return false;
-            if (shouldAgree == ShouldAgreeResult.AlreadyAgreed) return true;
-
-            try
-            {
-                var agreeTask = _agreeMethod.Invoke(null, new object[] { contentId }) as Task<bool>;
-                if (agreeTask is null)
-                {
-                    Logger.LogError(
-                        $"Failed to invoke Agree method for copyright agreement. (Return is {agreeTask?.GetType().ToString() ?? "null"} not Task<bool>)");
-                    return false;
-                }
-
-                var result = await agreeTask;
-                return result;
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex, "Failed to auto-agree copyright agreement.");
-            }
-
-            return false;
+            await AgreeAsync(contentId);
+            return true;
         }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Failed to auto-agree copyright agreement.");
+        }
+
+        return false;
     }
 
     private static async ValueTask<ShouldAgreeResult> ShouldAgreeAsync(string contentId)
