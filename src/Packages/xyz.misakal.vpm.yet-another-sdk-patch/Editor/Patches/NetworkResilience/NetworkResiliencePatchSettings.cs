@@ -1,39 +1,42 @@
 ﻿using System;
-using UnityEditor;
-using UnityEngine;
 using YesPatchFrameworkForVRChatSdk.PatchApi;
 
 namespace YetAnotherPatchForVRChatSdk.Patches.NetworkResilience
 {
-    internal sealed class NetworkResiliencePatchSettings : ScriptableObject
+    internal sealed class NetworkResiliencePatchSettings
     {
+        private const string SettingsId = "xyz.misakal.vpm.yet-another-sdk-patch.network-resilience";
+        private const string SettingsFileName = nameof(NetworkResiliencePatchSettings) + ".json";
+
+        private static NetworkResiliencePatchSettings? _instance;
+
         internal static NetworkResiliencePatchSettings GetOrCreateSettings()
         {
-            var settingsPath =
-                PatchSettingsHelper.CreateSettingsFolderIfNotExists(
-                    "xyz.misakal.vpm.yet-another-sdk-patch.network-resilience",
-                    nameof(NetworkResiliencePatchSettings) + ".asset");
+            if (_instance is not null)
+                return _instance;
 
-            var settings = AssetDatabase.LoadAssetAtPath<NetworkResiliencePatchSettings>(settingsPath);
-            if (settings != null)
-                return settings;
+            _instance = PatchSettingsHelper.GetOrCreateSettingsJson(SettingsId, SettingsFileName,
+                () => new NetworkResiliencePatchSettings()
+            );
 
-            settings = CreateInstance<NetworkResiliencePatchSettings>();
-
-            AssetDatabase.CreateAsset(settings, settingsPath);
-            AssetDatabase.SaveAssets();
-            return settings;
+            _instance.Save();
+            return _instance;
         }
 
-        public ProxyMode proxyMode = ProxyMode.SystemProxy;
-        public string customProxyAddress = string.Empty;
+        public ProxyMode ProxyMode { get; set; } = ProxyMode.SystemProxy;
+        public string CustomProxyAddress { get; set; } = string.Empty;
 
         public bool TryGetProxyUri(out Uri proxyUri)
         {
-            if (!Uri.TryCreate(customProxyAddress, UriKind.Absolute, out proxyUri))
+            if (!Uri.TryCreate(CustomProxyAddress, UriKind.Absolute, out proxyUri))
                 return false;
 
             return proxyUri.Scheme == "http";
+        }
+
+        public void Save()
+        {
+            PatchSettingsHelper.SaveSettingsJson(SettingsId, SettingsFileName, this);
         }
     }
 

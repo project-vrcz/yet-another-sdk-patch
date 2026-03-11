@@ -8,10 +8,10 @@ namespace YetAnotherPatchForVRChatSdk.Patches.NetworkResilience.SettingsUi;
 internal sealed class NetworkResiliencePatchSettingsUi : VisualElement
 {
     private readonly NetworkResiliencePatchSettings _settings = NetworkResiliencePatchSettings.GetOrCreateSettings();
-    private readonly SerializedObject _settingsSerializedObject;
 
     private readonly VisualElement _customProxyUriValidationMessage;
     private readonly TextField _customProxyUriField;
+    private readonly EnumField _proxyModeField;
 
     private const string VisualTreeAssetGuid = "cdd9f4145c19b564b967e698981ab473";
 
@@ -24,20 +24,35 @@ internal sealed class NetworkResiliencePatchSettingsUi : VisualElement
         var tree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(path);
         tree.CloneTree(this);
 
+        _proxyModeField = this.Q<EnumField>("proxy-mode");
         _customProxyUriField = this.Q<TextField>("proxy-uri");
         _customProxyUriValidationMessage = this.Q<VisualElement>("custom-proxy-uri-valid-error");
 
-        _settingsSerializedObject = new SerializedObject(_settings);
+        _proxyModeField.Init(ProxyMode.NoProxy);
 
         UpdateUi();
 
-        this.TrackSerializedObjectValue(_settingsSerializedObject, _ => UpdateUi());
-        this.Bind(_settingsSerializedObject);
+        _proxyModeField.RegisterValueChangedCallback(evt =>
+        {
+            _settings.ProxyMode = (ProxyMode)evt.newValue;
+            _settings.Save();
+            UpdateUi();
+        });
+
+        _customProxyUriField.RegisterValueChangedCallback(evt =>
+        {
+            _settings.CustomProxyAddress = evt.newValue;
+            _settings.Save();
+            UpdateUi();
+        });
     }
 
     private void UpdateUi()
     {
-        var isCustomProxySelected = _settings.proxyMode == ProxyMode.CustomProxy;
+        _proxyModeField.SetValueWithoutNotify(_settings.ProxyMode);
+        _customProxyUriField.SetValueWithoutNotify(_settings.CustomProxyAddress);
+
+        var isCustomProxySelected = _settings.ProxyMode == ProxyMode.CustomProxy;
 
         _customProxyUriField.style.display = new StyleEnum<DisplayStyle>(
             isCustomProxySelected ? DisplayStyle.Flex : DisplayStyle.None
