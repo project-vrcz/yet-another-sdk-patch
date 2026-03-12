@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **BREAKING CHANGE** Migrate to JSON-based settings system. [`#35`](https://github.com/project-vrcz/yet-another-sdk-patch/pull/35)
+  - You will lost log level, patches enabled settings after this update.
+
+### Fixed
+
+- In some case settings will lost after reload domain / reimport. [`#35`](https://github.com/project-vrcz/yet-another-sdk-patch/pull/35)
+
 ## [0.2.1] - 2025-12-23
 
 ### Added

@@ -22,7 +22,7 @@ internal sealed class YesFrameworkLogger : IYesLogger
     public YesFrameworkLogger()
     {
         var settings = YesPatchManagerSettings.GetOrCreateSettings();
-        _minLogLevelForUnity = settings.unityConsoleMinLogLevel;
+        _minLogLevelForUnity = settings.UnityConsoleMinLogLevel;
     }
 
     public void Log(YesLogLevel level, string source, string message, Exception? exception, Object? context)
@@ -144,7 +144,7 @@ internal sealed class YesFrameworkLogger : IYesLogger
     private static void SaveLogLevelToSettings()
     {
         var settings = YesPatchManagerSettings.GetOrCreateSettings();
-        settings.unityConsoleMinLogLevel = Instance._minLogLevelForUnity;
+        settings.UnityConsoleMinLogLevel = Instance._minLogLevelForUnity;
         settings.Save();
     }
 

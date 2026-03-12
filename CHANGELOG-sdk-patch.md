@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **BREAKING CHANGE** Migrate to JSON-based settings system. [`#35`](https://github.com/project-vrcz/yet-another-sdk-patch/pull/35)
+  - You will lost NetworkResilience Settings (Http Proxy Settings) after this update.
+
+### Fixed
+
+- In some case settings will lost after reload domain / reimport. [`#35`](https://github.com/project-vrcz/yet-another-sdk-patch/pull/35)
+
 ### Added
 
 - `AlwaysAgreeCopyrightAgreementPatch` will also patch `VRCApi.ContentUploadConsent` for tools didn't check is already agreed before send agree request.

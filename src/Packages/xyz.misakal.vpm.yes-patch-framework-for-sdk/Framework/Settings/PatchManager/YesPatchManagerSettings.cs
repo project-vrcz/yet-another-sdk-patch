@@ -1,76 +1,71 @@
 ﻿using System.Collections.Generic;
-using UnityEditor;
-using UnityEngine;
+using YesPatchFrameworkForVRChatSdk.PatchApi;
 using YesPatchFrameworkForVRChatSdk.PatchApi.Logging;
 
-// DO NOT USE file scoped namespace, It will brake ScriptableObject creation
-namespace YesPatchFrameworkForVRChatSdk.Settings.PatchManager
+namespace YesPatchFrameworkForVRChatSdk.Settings.PatchManager;
+
+internal sealed class YesPatchManagerSettings
 {
-    internal sealed class YesPatchManagerSettings : ScriptableObject
+    private const string SettingsId = "xyz.misakal.vpm.yes-patch-framework-for-sdk";
+    private const string SettingsFileName = "patch-manager.json";
+
+    public List<YesPatchManagerPatchSettings> PatchSettings { get; } = new();
+    public YesLogLevel UnityConsoleMinLogLevel { get; set; } = YesLogLevel.Info;
+
+    private static YesPatchManagerSettings? _instance;
+
+    internal static YesPatchManagerSettings GetOrCreateSettings()
     {
-        public const string FolderName = "YesPatchFrameworkForVRChatSdk";
-        public const string FolderPath = "Assets/" + FolderName;
-        public const string AssetPath = "Assets/" + FolderName + "/" + "YesPatchManagerSettings.asset";
+        if (_instance is not null)
+            return _instance;
 
-        [SerializeField] private List<YesPatchManagerPatchSettings> patchSettings = new();
+        _instance = PatchSettingsHelper.GetOrCreateSettingsJson(
+            SettingsId,
+            SettingsFileName,
+            () => new YesPatchManagerSettings()
+        );
 
-        [SerializeField] public YesLogLevel unityConsoleMinLogLevel = YesLogLevel.Info;
+        _instance.Save();
 
-        internal static YesPatchManagerSettings GetOrCreateSettings()
+        return _instance;
+    }
+
+    public bool IsPatchEnabled(string patchId, bool fallbackValue = false)
+    {
+        var settingIndex = PatchSettings.FindIndex(s => s.Id == patchId);
+        if (settingIndex == -1)
+            return fallbackValue;
+
+        var setting = PatchSettings[settingIndex];
+        return setting.IsEnabled;
+    }
+
+    public void SetPatchEnabled(string patchId, bool isEnabled)
+    {
+        var settingIndex = PatchSettings.FindIndex(s => s.Id == patchId);
+        var setting = settingIndex == -1 ? new YesPatchManagerPatchSettings() : PatchSettings[settingIndex];
+
+        setting.Id = patchId;
+        setting.IsEnabled = isEnabled;
+
+        if (settingIndex == -1)
         {
-            var settings = AssetDatabase.LoadAssetAtPath<YesPatchManagerSettings>(AssetPath);
-            if (settings != null)
-                return settings;
-
-            settings = CreateInstance<YesPatchManagerSettings>();
-
-            if (!AssetDatabase.IsValidFolder(FolderPath))
-                AssetDatabase.CreateFolder("Assets", FolderName);
-
-            AssetDatabase.CreateAsset(settings, AssetPath);
-            AssetDatabase.SaveAssets();
-            return settings;
-        }
-
-        public bool IsPatchEnabled(string patchId, bool fallbackValue = false)
-        {
-            var settingIndex = patchSettings.FindIndex(s => s.id == patchId);
-            if (settingIndex == -1)
-                return fallbackValue;
-
-            var setting = patchSettings[settingIndex];
-            return setting.isEnabled;
-        }
-
-        public void SetPatchEnabled(string patchId, bool isEnabled)
-        {
-            var settingIndex = patchSettings.FindIndex(s => s.id == patchId);
-            var setting = settingIndex == -1 ? new YesPatchManagerPatchSettings() : patchSettings[settingIndex];
-
-            setting.id = patchId;
-            setting.isEnabled = isEnabled;
-
-            if (settingIndex == -1)
+            PatchSettings.Add(new YesPatchManagerPatchSettings
             {
-                patchSettings.Add(new YesPatchManagerPatchSettings
-                {
-                    id = patchId,
-                    isEnabled = isEnabled
-                });
-            }
-            else
-            {
-                patchSettings[settingIndex] = setting;
-            }
-
-            EditorUtility.SetDirty(this);
-            AssetDatabase.SaveAssets();
+                Id = patchId,
+                IsEnabled = isEnabled
+            });
         }
-
-        public void Save()
+        else
         {
-            EditorUtility.SetDirty(this);
-            AssetDatabase.SaveAssets();
+            PatchSettings[settingIndex] = setting;
         }
+
+        Save();
+    }
+
+    public void Save()
+    {
+        PatchSettingsHelper.SaveSettingsJson(SettingsId, SettingsFileName, this);
     }
 }

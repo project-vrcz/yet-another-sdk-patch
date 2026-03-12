@@ -22,7 +22,7 @@ internal sealed class NetworkResilienceWebProxy : IWebProxy
 
     private IWebProxy? GetWebProxy()
     {
-        switch (_settings.proxyMode)
+        switch (_settings.ProxyMode)
         {
             case ProxyMode.NoProxy:
                 return null;
@@ -36,7 +36,7 @@ internal sealed class NetworkResilienceWebProxy : IWebProxy
 
     private IWebProxy GetCustomWebProxy()
     {
-        var customProxyUri = _settings.customProxyAddress;
+        var customProxyUri = _settings.CustomProxyAddress;
         if (_customWebProxyInstance?.CustomProxyUri == customProxyUri)
             return _customWebProxyInstance.Value.CustomProxy;
 
