@@ -18,6 +18,9 @@
     "patcher"
   ],
   "vpmDependencies": {},
+  "dependencies": {
+    "com.unity.nuget.newtonsoft-json": "3.2.1"
+  },
   "legacyPackages": [
     "cn.org.vrcd.vpm.vrchat-sdk-patcher",
     "cn.org.vrcd.vpm.vrchat-sdk-patcher.worlds",
