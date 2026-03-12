@@ -25,19 +25,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.2.0] - 2025-12-18
 
-### Changes
+### Changed
 
 - Use Harmony 2.4.2 instead of HarmonyX. [`#22`](https://github.com/project-vrcz/yet-another-sdk-patch/pull/22) [`#19`](https://github.com/project-vrcz/yet-another-sdk-patch/pull/19)
 
 ## [0.2.0-beta.2] - 2025-12-12
 
-### Changes
+### Changed
 
 - Use Harmony 2.4.2 instead of HarmonyX. [`#22`](https://github.com/project-vrcz/yet-another-sdk-patch/pull/22) [`#19`](https://github.com/project-vrcz/yet-another-sdk-patch/pull/19)
 
 ## [0.2.0-beta.1] - 2025-12-11
 
-### Changes
+### Changed
 
 - Use SDK provided 0Harmony.dll instead of HarmonyX. [`#19`](https://github.com/project-vrcz/yet-another-sdk-patch/pull/19)
 
@@ -60,7 +60,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Logging View Window.
   - Allow control min log level send to Unity Console.
 
-### Changes from the [0.1.0-beta.1]
+### Changed from the [0.1.0-beta.1]
 
 #### Added
 

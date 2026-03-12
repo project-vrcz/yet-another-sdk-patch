@@ -9,19 +9,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.2.1] - 2025-12-25
 
-### Changes
+### Changed
 
 - Rename to `Yet Another SDK Patch - Avatars Pack`. [`#28`](https://github.com/project-vrcz/yet-another-sdk-patch/pull/29)
 
 ## [0.2.0] - 2025-12-18
 
-### Changes
+### Changed
 
 - Use Framework provided 0Harmony.dll instead of HarmonyX. [`#22`](https://github.com/project-vrcz/yet-another-sdk-patch/pull/22) [`#19`](https://github.com/project-vrcz/yet-another-sdk-patch/pull/19)
 
 ## [0.2.0-beta.1] - 2025-12-11
 
-### Changes
+### Changed
 
 - Use SDK provided 0Harmony.dll instead of HarmonyX. [`#19`](https://github.com/project-vrcz/yet-another-sdk-patch/pull/19)
 

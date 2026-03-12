@@ -34,7 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - You can check your IP address use to send request to VRChat Services.
   - And all debug information inculde in Cloudflare trace endpoint. (e.g User-Agent, TLS version, Edge location)
 
-### Changes
+### Changed
 
 - Use Framework provided 0Harmony.dll instead of HarmonyX. [`#22`](https://github.com/project-vrcz/yet-another-sdk-patch/pull/22) [`#19`](https://github.com/project-vrcz/yet-another-sdk-patch/pull/19)
 
@@ -46,13 +46,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - You can check your IP address use to send request to VRChat Services.
   - And all debug information inculde in Cloudflare trace endpoint. (e.g User-Agent, TLS version, Edge location)
 
-### Changes
+### Changed
 
 - Use SDK provided 0Harmony.dll instead of HarmonyX. [`#19`](https://github.com/project-vrcz/yet-another-sdk-patch/pull/19)
 
 ## [0.2.0-beta.1] - 2025-12-11
 
-### Changes
+### Changed
 
 - Use SDK provided 0Harmony.dll instead of HarmonyX. [`#19`](https://github.com/project-vrcz/yet-another-sdk-patch/pull/19)
 
@@ -73,7 +73,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Always Agree Copyright Agreement Patch
   - Automatically agrees to the copyright agreement when uploading content.
 
-### Changes from [0.1.0-beta.2]
+### Changed from [0.1.0-beta.2]
 
 #### Changed
 
