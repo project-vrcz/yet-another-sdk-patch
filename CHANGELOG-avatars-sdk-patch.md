@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **BREAKING CHANGE** Bump to Yes! Patch Framework v0.3.0
+
 ## [0.2.1] - 2025-12-25
 
 ### Changed
