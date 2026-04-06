@@ -4,7 +4,6 @@ using HarmonyLib;
 using JetBrains.Annotations;
 using Unity.Profiling;
 using UnityEngine;
-using UnityEngine.UIElements;
 using VRC.Udon;
 using VRC.Udon.Common.Interfaces;
 using YesPatchFrameworkForVRChatSdk.PatchApi;
@@ -27,27 +26,35 @@ internal sealed class UdonProfilerPatch : YesPatchBase
 
     private readonly Harmony _harmony = new("xyz.misakal.vpm.yet-another-sdk-patch.worlds.udon-profiler");
 
+    private static int _mainThreadId;
+
+    [RuntimeInitializeOnLoadMethod]
+    private static void OnInitialized()
+    {
+        _mainThreadId = Environment.CurrentManagedThreadId;
+    }
+
+    private static bool IsMainThread()
+    {
+        return _mainThreadId == Environment.CurrentManagedThreadId;
+    }
+
     public override void Patch()
     {
+        ProfilerMarkerScope.CleanMarkerCache();
         _harmony.PatchAll(typeof(UdonProfilerPatch));
     }
 
     public override void UnPatch()
     {
         _harmony.UnpatchSelf();
+        ProfilerMarkerScope.CleanMarkerCache();
     }
 
-    public override void CreateSettingsUi(VisualElement rootVisualElement)
+    private struct PatchState
     {
-        rootVisualElement.Add(new HelpBox(
-            "If your UdonBehaviour is not running on the main thread, it may cause an error!",
-            HelpBoxMessageType.Warning)
-        {
-            style =
-            {
-                unityFontStyleAndWeight = new StyleEnum<FontStyle>(FontStyle.Bold)
-            }
-        });
+        public ProfilerMarker Marker;
+        public bool InMainThread;
     }
 
     [HarmonyPatch(typeof(UdonBehaviour), nameof(UdonBehaviour.RunProgram), typeof(uint))]
@@ -56,17 +63,34 @@ internal sealed class UdonProfilerPatch : YesPatchBase
         uint entryPoint,
         UdonBehaviour __instance,
         ref IUdonProgram ____program,
-        out ProfilerMarker __state)
+        out PatchState __state)
     {
-        __state = ProfilerMarkerScope.TryGetProfilerMarker(__instance, ____program, entryPoint);
-        __state.Begin(__instance.gameObject);
+        if (IsMainThread())
+        {
+            __state = new PatchState
+            {
+                Marker = ProfilerMarkerScope.GetProfilerMarker(__instance, ____program, entryPoint),
+                InMainThread = true
+            };
+            __state.Marker.Begin(__instance.gameObject);
+        }
+        else
+        {
+            __state = new PatchState
+            {
+                InMainThread = false
+            };
+        }
     }
 
     [HarmonyPatch(typeof(UdonBehaviour), nameof(UdonBehaviour.RunProgram), typeof(uint))]
     [HarmonyFinalizer]
-    public static void Finalizer(ref ProfilerMarker __state)
+    private static void Finalizer(ref PatchState __state)
     {
-        __state.End();
+        if (__state.InMainThread)
+        {
+            __state.Marker.End();
+        }
     }
 
     private readonly struct ProfilerMarkerScope : IDisposable
@@ -87,7 +111,13 @@ internal sealed class UdonProfilerPatch : YesPatchBase
         private static readonly Dictionary<(int, uint), ProfilerMarker> ProfilerMarkerEventCache = new();
 
         [PublicAPI]
-        public static ProfilerMarker TryGetProfilerMarker(
+        public static void CleanMarkerCache()
+        {
+            ProfilerMarkerEventCache.Clear();
+        }
+
+        [PublicAPI]
+        public static ProfilerMarker GetProfilerMarker(
             UdonBehaviour udonBehaviour, IUdonProgram udonProgram, uint entryPoint)
         {
             var programID = udonBehaviour.programSource.GetInstanceID();
@@ -113,7 +143,7 @@ internal sealed class UdonProfilerPatch : YesPatchBase
         {
             return new ProfilerMarkerScope
             (
-                TryGetProfilerMarker(udonBehaviour, udonProgram, entryPoint), udonBehaviour.gameObject
+                GetProfilerMarker(udonBehaviour, udonProgram, entryPoint), udonBehaviour.gameObject
             );
         }
     }
