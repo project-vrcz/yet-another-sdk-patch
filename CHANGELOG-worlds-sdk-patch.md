@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.1] - 2026-04-13
+
 ### Added
 
 - Main thread check for Udon Profiler. [`#39`](https://github.com/project-vrcz/yet-another-sdk-patch/pull/39)
@@ -49,7 +51,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Udon Profiler
   - Add more detail markers to Unity Profiler for Udon behaviours execution.
 
-[unreleased]: https://github.com/project-vrcz/yet-another-sdk-patch/compare/worlds-sdk-patch-v0.3.0...HEAD
+[unreleased]: https://github.com/project-vrcz/yet-another-sdk-patch/compare/worlds-sdk-patch-v0.3.1...HEAD
+[0.3.1]: https://github.com/project-vrcz/yet-another-sdk-patch/compare/worlds-sdk-patch-v0.3.0...worlds-sdk-patch-v0.3.1
 [0.3.0]: https://github.com/project-vrcz/yet-another-sdk-patch/compare/worlds-sdk-patch-v0.2.1...worlds-sdk-patch-v0.3.0
 [0.2.1]: https://github.com/project-vrcz/yet-another-sdk-patch/compare/worlds-sdk-patch-v0.2.0...worlds-sdk-patch-v0.2.1
 [0.2.0]: https://github.com/project-vrcz/yet-another-sdk-patch/compare/worlds-sdk-patch-v0.2.0-beta.1...worlds-sdk-patch-v0.2.0
