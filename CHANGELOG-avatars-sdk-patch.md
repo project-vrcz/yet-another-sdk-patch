@@ -13,6 +13,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - If you exit play mode when avatar parameter driver editor visible, it will keep spawn animator window when domain reload in some case.
   - This patch will do nothing if VRCFury installed.
 
+## [0.3.1-beta.2] - 2026-04-15
+
+### Added
+
+- Fix parameter driver editor always spawn animator window patch. [`#40`](https://github.com/project-vrcz/yet-another-sdk-patch/pull/40)
+  - If you exit play mode when avatar parameter driver editor visible, it will keep spawn animator window when domain reload in some case.
+  - This patch will do nothing if VRCFury installed.
+
 ## [0.3.1-beta.1] - 2026-04-13
 
 ### Added
@@ -63,7 +71,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix .sb Forget to Crop Thumbnail Patch
   - Fix the issue that VRChat SDK forgets to crop the avatar thumbnail when creating new avatar after 3.9.0.
 
-[unreleased]: https://github.com/project-vrcz/yet-another-sdk-patch/compare/avatars-sdk-patch-v0.3.1-beta.1...HEAD
+[unreleased]: https://github.com/project-vrcz/yet-another-sdk-patch/compare/avatars-sdk-patch-v0.3.1-beta.2...HEAD
+[0.3.1-beta.2]: https://github.com/project-vrcz/yet-another-sdk-patch/compare/avatars-sdk-patch-v0.3.1-beta.1...avatars-sdk-patch-v0.3.1-beta.2
 [0.3.1-beta.1]: https://github.com/project-vrcz/yet-another-sdk-patch/compare/avatars-sdk-patch-v0.3.0...avatars-sdk-patch-v0.3.1-beta.1
 [0.3.0]: https://github.com/project-vrcz/yet-another-sdk-patch/compare/avatars-sdk-patch-v0.2.1...avatars-sdk-patch-v0.3.0
 [0.2.1]: https://github.com/project-vrcz/yet-another-sdk-patch/compare/avatars-sdk-patch-v0.2.0...avatars-sdk-patch-v0.2.1
