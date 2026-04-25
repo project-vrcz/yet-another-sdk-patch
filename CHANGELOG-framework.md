@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Use `CompilationPipeline.RequestScriptCompilation()` to reload domain when enabling or disabling patches instead of applying/unapplying patches at runtime. [`#42`](https://github.com/project-vrcz/yet-another-sdk-patch/issues/42)
+
 ## [0.3.0] - 2026-03-12
 
 ### Changed
