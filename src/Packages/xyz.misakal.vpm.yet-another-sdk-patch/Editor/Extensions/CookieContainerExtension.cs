@@ -41,19 +41,47 @@ internal static class CookieContainerExtension
         }
     }
 
-    public static void Clear(this CookieContainer cookieContainer)
+    public static CookieContainer Clone(this CookieContainer cookieContainer, Func<Cookie, bool>? predicate = null)
     {
-        foreach (var cookie in GetAllCookies(cookieContainer))
+        var clone = new CookieContainer();
+        foreach (var cookie in cookieContainer.GetAllCookies())
         {
-            cookie.Expired = true;
+            if (predicate is null || predicate(cookie))
+                clone.AddRange(new[] { cookie });
         }
+
+        return clone;
     }
 
     public static void AddRange(this CookieContainer cookieContainer, IEnumerable<Cookie> cookies)
     {
         foreach (var cookie in cookies)
         {
-            cookieContainer.Add(cookie);
+            cookieContainer.Add(CloneCookie(cookie));
         }
     }
+
+    private static Cookie CloneCookie(Cookie cookie)
+    {
+        var clone = new Cookie(cookie.Name, cookie.Value, cookie.Path, cookie.Domain)
+        {
+            Discard = cookie.Discard,
+            Expired = cookie.Expired,
+            HttpOnly = cookie.HttpOnly,
+            Secure = cookie.Secure,
+            Version = cookie.Version
+        };
+
+        if (!string.IsNullOrEmpty(cookie.Comment))
+            clone.Comment = cookie.Comment;
+        if (cookie.CommentUri is not null)
+            clone.CommentUri = cookie.CommentUri;
+        if (cookie.Expires != DateTime.MinValue)
+            clone.Expires = cookie.Expires;
+        if (!string.IsNullOrEmpty(cookie.Port))
+            clone.Port = cookie.Port;
+
+        return clone;
+    }
+
 }

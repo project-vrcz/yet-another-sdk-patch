@@ -141,7 +141,7 @@ internal sealed class NetworkResiliencePatch : YesPatchBase
     private static bool HttpClientTimeoutSetterPrefix(HttpClient __instance, TimeSpan value)
     {
         // Prevent SDK from setting HttpClient.Timeout
-        if (__instance == _httpClientFactory?.GetOrCreateClient() && value != Timeout.InfiniteTimeSpan)
+        if (__instance == _httpClientFactory?.Client && value != Timeout.InfiniteTimeSpan)
         {
             return false;
         }
