@@ -12,7 +12,6 @@
     "allowUnsafeCode": false,
     "overrideReferences": true,
     "precompiledReferences": [
-        "YAP4VRC.Polly.Core.dll",
         "0Harmony.dll",
         "VRCSDK3.dll",
         "VRCSDKBase.dll",

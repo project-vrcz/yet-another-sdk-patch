@@ -17,7 +17,9 @@
     "patch",
     "patcher"
   ],
-  "vpmDependencies": {},
+  "vpmDependencies": {
+    "com.vrchat.base": "^3.7.0"
+  },
   "dependencies": {
     "com.unity.nuget.newtonsoft-json": "3.2.1"
   },
