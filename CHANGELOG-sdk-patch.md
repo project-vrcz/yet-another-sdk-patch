@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.1] - 2026-08-03
+
 ### Fixed
 
 - In some case `NetworkResilience` patch will throw `NullReferenceException` during initialize HttpClient. [`#50`](https://github.com/project-vrcz/yet-another-sdk-patch/pull/50) [`#51`](https://github.com/project-vrcz/yet-another-sdk-patch/pull/51)
@@ -121,7 +123,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Always Agree Copyright Agreement Patch
   - Automatically agrees to the copyright agreement when uploading content.
 
-[unreleased]: https://github.com/project-vrcz/yet-another-sdk-patch/compare/sdk-patch-v0.3.0...HEAD
+[unreleased]: https://github.com/project-vrcz/yet-another-sdk-patch/compare/sdk-patch-v0.3.1...HEAD
+[0.3.1]: https://github.com/project-vrcz/yet-another-sdk-patch/compare/sdk-patch-v0.3.0...sdk-patch-v0.3.1
 [0.3.0]: https://github.com/project-vrcz/yet-another-sdk-patch/compare/sdk-patch-v0.2.1...sdk-patch-v0.3.0
 [0.2.1]: https://github.com/project-vrcz/yet-another-sdk-patch/compare/sdk-patch-v0.2.0...sdk-patch-v0.2.1
 [0.2.0]: https://github.com/project-vrcz/yet-another-sdk-patch/compare/sdk-patch-v0.2.0-beta.2...sdk-patch-v0.2.0
