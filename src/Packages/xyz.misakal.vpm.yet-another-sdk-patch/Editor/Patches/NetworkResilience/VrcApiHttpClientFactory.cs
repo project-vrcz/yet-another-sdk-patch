@@ -6,12 +6,15 @@ using System.Threading;
 using UnityEngine;
 using VRC;
 using VRC.Core;
+using YesPatchFrameworkForVRChatSdk.PatchApi.Logging;
 using YetAnotherPatchForVRChatSdk.Extensions;
 
 namespace YetAnotherPatchForVRChatSdk.Patches.NetworkResilience;
 
 internal sealed class VrcApiHttpClientFactory
 {
+    private const string LoggerSource = nameof(NetworkResiliencePatch) + "." + nameof(VrcApiHttpClientFactory);
+
     public delegate void SetupCookieContainerGetCookiesDelegate(CookieContainer cookieContainer);
 
     private readonly SetupCookieContainerGetCookiesDelegate _setupCookieContainer;
@@ -60,7 +63,15 @@ internal sealed class VrcApiHttpClientFactory
         var client = new HttpClient(handler);
         client.Timeout = Timeout.InfiniteTimeSpan;
 
-        client.DefaultRequestHeaders.Add("X-MacAddress", API.DeviceID);
+        try
+        {
+            client.DefaultRequestHeaders.Add("X-MacAddress", API.DeviceID);
+        }
+        catch (Exception ex)
+        {
+            YesLogger.LogDebug(ex, LoggerSource, "Failed to add X-MacAddress header", null);
+        }
+
         foreach (var header in _defaultRequestHeaders)
         {
             client.DefaultRequestHeaders.Add(header.Key, header.Value);
