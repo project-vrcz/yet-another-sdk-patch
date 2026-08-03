@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- In some case `NetworkResilience` patch will throw `NullReferenceException` during initialize HttpClient.
+- In some case `NetworkResilience` patch will throw `NullReferenceException` during initialize HttpClient. [`#50`](https://github.com/project-vrcz/yet-another-sdk-patch/pull/50) [`#51`](https://github.com/project-vrcz/yet-another-sdk-patch/pull/51)
 
 ## [0.3.0] - 2026-03-12
 
