@@ -19,7 +19,6 @@ internal sealed class VrcApiHttpClientFactory
     private readonly Dictionary<string, string> _defaultRequestHeaders = new()
     {
         { "User-Agent", "VRC.Core.BestHTTP" },
-        { "X-MacAddress", API.DeviceID },
         { "X-SDK-Version", Tools.SdkVersion },
         { "X-Platform", Tools.Platform },
         { "X-Unity-Version", Application.unityVersion },
@@ -61,6 +60,7 @@ internal sealed class VrcApiHttpClientFactory
         var client = new HttpClient(handler);
         client.Timeout = Timeout.InfiniteTimeSpan;
 
+        client.DefaultRequestHeaders.Add("X-MacAddress", API.DeviceID);
         foreach (var header in _defaultRequestHeaders)
         {
             client.DefaultRequestHeaders.Add(header.Key, header.Value);
