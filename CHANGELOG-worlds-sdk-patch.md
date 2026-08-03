@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.2] - 2026-08-03
+
 ### Fixed
 
 - Require Polly.Core dll from base package for no reason. [`#52`](https://github.com/project-vrcz/yet-another-sdk-patch/pull/52)
@@ -55,7 +57,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Udon Profiler
   - Add more detail markers to Unity Profiler for Udon behaviours execution.
 
-[unreleased]: https://github.com/project-vrcz/yet-another-sdk-patch/compare/worlds-sdk-patch-v0.3.1...HEAD
+[unreleased]: https://github.com/project-vrcz/yet-another-sdk-patch/compare/worlds-sdk-patch-v0.3.2...HEAD
+[0.3.2]: https://github.com/project-vrcz/yet-another-sdk-patch/compare/worlds-sdk-patch-v0.3.1...worlds-sdk-patch-v0.3.2
 [0.3.1]: https://github.com/project-vrcz/yet-another-sdk-patch/compare/worlds-sdk-patch-v0.3.0...worlds-sdk-patch-v0.3.1
 [0.3.0]: https://github.com/project-vrcz/yet-another-sdk-patch/compare/worlds-sdk-patch-v0.2.1...worlds-sdk-patch-v0.3.0
 [0.2.1]: https://github.com/project-vrcz/yet-another-sdk-patch/compare/worlds-sdk-patch-v0.2.0...worlds-sdk-patch-v0.2.1
