@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Require Polly.Core dll from base package for no reason. [`#52`](https://github.com/project-vrcz/yet-another-sdk-patch/pull/52)
+
 ## [0.3.1] - 2026-04-13
 
 ### Added
