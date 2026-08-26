@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using HarmonyLib;
 using JetBrains.Annotations;
 using Unity.Profiling;
+using UnityEditor;
 using UnityEngine;
 using VRC.Udon;
 using VRC.Udon.Common.Interfaces;
 using YesPatchFrameworkForVRChatSdk.PatchApi;
 using YesPatchFrameworkForVRChatSdk.PatchApi.Extensions;
-using UnityObject = UnityEngine.Object;
 
 namespace YetAnotherPatchForVRChatSdk.Worlds.Patches;
 
@@ -41,14 +41,27 @@ internal sealed class UdonProfilerPatch : YesPatchBase
 
     public override void Patch()
     {
-        ProfilerMarkerScope.CleanMarkerCache();
+        CachedProfilerMarker.ClearCache();
         _harmony.PatchAll(typeof(UdonProfilerPatch));
+        EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
+        EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
     }
 
     public override void UnPatch()
     {
         _harmony.UnpatchSelf();
-        ProfilerMarkerScope.CleanMarkerCache();
+        EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
+        CachedProfilerMarker.ClearCache();
+    }
+
+    private static void OnPlayModeStateChanged(PlayModeStateChange state)
+    {
+        switch (state)
+        {
+            case PlayModeStateChange.ExitingEditMode or PlayModeStateChange.EnteredEditMode:
+                CachedProfilerMarker.ClearCache();
+                break;
+        }
     }
 
     private struct PatchState
@@ -69,7 +82,7 @@ internal sealed class UdonProfilerPatch : YesPatchBase
         {
             __state = new PatchState
             {
-                Marker = ProfilerMarkerScope.GetProfilerMarker(__instance, ____program, entryPoint),
+                Marker = CachedProfilerMarker.Get(__instance, ____program, entryPoint),
                 InMainThread = true
             };
             __state.Marker.Begin(__instance.gameObject);
@@ -93,58 +106,49 @@ internal sealed class UdonProfilerPatch : YesPatchBase
         }
     }
 
-    private readonly struct ProfilerMarkerScope : IDisposable
+    private readonly struct CachedProfilerMarker
     {
-        private readonly ProfilerMarker _marker;
-
-        private ProfilerMarkerScope(ProfilerMarker profilerMarker, UnityObject obj)
-        {
-            _marker = profilerMarker;
-            _marker.Begin(obj);
-        }
-
-        public void Dispose()
-        {
-            _marker.End();
-        }
-
-        private static readonly Dictionary<(int, uint), ProfilerMarker> ProfilerMarkerEventCache = new();
+        private static readonly Dictionary<(int, uint), ProfilerMarker> Cache = new();
+        private static readonly ProfilerMarker MarkerMissingSource = new("Udon [Missing Source]");
+        private static readonly ProfilerMarker MarkerMissingProgram = new("Udon [Missing Program]");
 
         [PublicAPI]
-        public static void CleanMarkerCache()
+        public static void ClearCache()
         {
-            ProfilerMarkerEventCache.Clear();
+            Cache.Clear();
         }
 
         [PublicAPI]
-        public static ProfilerMarker GetProfilerMarker(
-            UdonBehaviour udonBehaviour, IUdonProgram udonProgram, uint entryPoint)
+        public static ProfilerMarker Get(UdonBehaviour udonBehaviour, IUdonProgram? udonProgram, uint entryPoint)
         {
-            var programID = udonBehaviour.programSource.GetInstanceID();
-            var key = (programID, entryPoint);
-
-            if (!ProfilerMarkerEventCache.TryGetValue(key, out var profilerMarker))
+            var programSource = udonBehaviour.programSource;
+            if (programSource == null)
             {
-                var programName = udonBehaviour.programSource.name;
-                if (!udonProgram.EntryPoints.TryGetSymbolFromAddress(entryPoint, out var symbolName))
-                {
-                    symbolName = "[UNKNOWN]";
-                }
-
-                profilerMarker = new ProfilerMarker($"Udon {programName}.{symbolName}");
-                ProfilerMarkerEventCache[key] = profilerMarker;
+                return MarkerMissingSource;
             }
 
-            return profilerMarker;
-        }
+            if (udonProgram == null)
+            {
+                return MarkerMissingProgram;
+            }
 
-        [PublicAPI]
-        public static ProfilerMarkerScope Auto(UdonBehaviour udonBehaviour, IUdonProgram udonProgram, uint entryPoint)
-        {
-            return new ProfilerMarkerScope
-            (
-                GetProfilerMarker(udonBehaviour, udonProgram, entryPoint), udonBehaviour.gameObject
-            );
+            var programID = programSource.GetInstanceID(); // TODO Unity 6 support
+            var key = (programID, entryPoint);
+
+            if (Cache.TryGetValue(key, out var profilerMarker))
+            {
+                return profilerMarker;
+            }
+
+            // Slow path if cache miss
+            if (!udonProgram.EntryPoints.TryGetSymbolFromAddress(entryPoint, out var symbolName))
+            {
+                symbolName = "[UNKNOWN]";
+            }
+
+            profilerMarker = new ProfilerMarker($"Udon {programSource.name}.{symbolName}");
+            Cache[key] = profilerMarker;
+            return profilerMarker;
         }
     }
 }
